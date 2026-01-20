@@ -783,14 +783,19 @@
             //this just adds a span
             text= text.replace(/([.;!:])/g,(a,p,s)=>('$' + p +'@'));
             var textList=text.split("@");
+            var nstart=0;
             text=textList.map(l=>{
             		var words=l.split(" ");
             		var last01=[];
             		var last02=[];
             		var last03=[];
             		var last04=[];
-            		var wnum=0;
+            		var wnum=nstart;
+            		var pref="";
             		
+            		if(nstart>0){
+            			pref='<span class="space">' + rep(pad,wnum," ") + '</span>';
+            		}
             		
             		l=words.map((w,i)=>{
             		    if(w==="lili" || w ==="la" || w ==="la," || w ==="lili,"){
@@ -829,7 +834,13 @@
             		l=l.replace(/\*/g,'<span class="newline2">');
             		l=l.replace(/\$/g,'<span class="newline">');
             		l=l.replace(/\@/g,'</span>');
-            		return l;
+            		if(l.at(-1)===":"){
+            		   nstart=1;
+            		}else{
+            		   nstart=0;
+            		}
+            		
+            		return pref+l;
             		//'<span class="newline">' + p + '</span>
             	}).join("</span>");
             
