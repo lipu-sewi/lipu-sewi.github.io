@@ -776,12 +776,12 @@
         
             // Handle names (words starting with &) by wrapping them in a span with class "name-rect"
             text=text.replace(/&/g,"~");
-            text=text.replace(/([^~])([A-Z])/g,"$1~$2");
+            text=text.replace(/([^~A-Za-z])([A-Z])/g,"$1~$2");
             text=text.replace(/\.\ (\ )*/g,". ");
             var pad="li";
             //if sitelen, need to figure out spaces
             //this just adds a span
-            text= text.replace(/([.;!])/g,(a,p,s)=>('$' + p +'@'));
+            text= text.replace(/([.;!:])/g,(a,p,s)=>('$' + p +'@'));
             var textList=text.split("@");
             text=textList.map(l=>{
             		var words=l.split(" ");
@@ -835,7 +835,7 @@
             
             
             //need to deal with : and ,
-            text= text.replace(/([,:])/g,(a,p,s)=>('<span class="punct">' + p + '</span>'));
+            text= text.replace(/([,])/g,(a,p,s)=>('<span class="punct">' + p + '</span>'));
             
             
             
