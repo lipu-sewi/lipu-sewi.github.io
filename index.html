@@ -801,7 +801,7 @@
             		    if(w==="lili" || w ==="la" || w ==="la," || w ==="lili,"){
             		    	w='<span class="wide2">' + w + '</span>';
             		    }
-            		    if(w==="o" || w ==="o,"){
+            		    if(w==="o" || w ==="o," || w==="kin" || w ==="kin,"){
             		    	w='<span class="wide1">' + w + '</span>';
             		    }
             		    if(w.indexOf("~")===0){
@@ -847,7 +847,7 @@
             
             //need to deal with : and ,
             text= text.replace(/([,])/g,(a,p,s)=>('<span class="punct">' + p + '</span>'));
-            
+            text= text.replace(/[ ][ ]*/g," ");
             
             
             return text.replace(/~(\w+)/g, (a,p,s)=>
