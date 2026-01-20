@@ -171,6 +171,10 @@
         	opacity:0%;
         	
         }
+        .sitelen-pona-mode .nudgeUp2{
+        	position: relative;
+  			top: -2px;
+        }
         .sitelen-pona-mode .wide4{
         	margin-left:4px;
         	margin-right:4px;
@@ -1069,7 +1073,7 @@
                 let build = "";
                 console.log(b);
                 if(fullDictionary.indexOf(b.proper.toLowerCase())>=0){
-                	return b.proper.toLowerCase() + " &nbsp;:";	
+                	return b.proper.toLowerCase() + " &nbsp;<span class='nudgeUp2'>:</span>";	
                 }
                 let ltrs=b.proper.split("");
                 let nm=ltrs.map(v=>[v,fallbackSitelen[v.toLowerCase()]])
