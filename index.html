@@ -1066,7 +1066,7 @@
             if(!b.sitelen){
                 let build = "";
                 if(fullDictionary.indexOf(b.proper.toLowerCase())>=0){
-                	return nm.toLowerCase() + " :";	
+                	return b.proper.toLowerCase() + " :";	
                 }
                 let ltrs=b.proper.split("");
                 let nm=ltrs.map(v=>[v,fallbackSitelen[v.toLowerCase()]])
