@@ -774,7 +774,7 @@
             			if(w==="li"){
             				if(last01.length>0){
             					wnum=last01.at(-1);
-            					w='$&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> ' + w; 	
+            					w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> ' + w; 	
             				}
             				last01.push(wnum);
             				last02=[];
@@ -783,7 +783,7 @@
             			}else if(w==="e"){
             				if(last02.length>0){
             					wnum=last02.at(-1);
-            					w='$&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> '+w; 	
+            					w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> '+w; 	
             				}
             				last02.push(wnum);
             				last03=[];
@@ -794,7 +794,8 @@
             			}
             			return w;
             		}).join(" ");
-            		l=l.replace(/\$/g,'<span class="newline2">');
+            		l=l.replace(/\*/g,'<span class="newline2">');
+            		l=l.replace(/\$/g,'<span class="newline">');
             		l=l.replace(/\@/g,'</span>');
             		return l;
             		//'<span class="newline">' + p + '</span>
