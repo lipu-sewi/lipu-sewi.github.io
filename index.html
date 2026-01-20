@@ -127,6 +127,7 @@
             display: inline;
         }
         
+        
         .unsolidified {
             opacity: 0.7;
             border-left: 3px solid #e74c3c;
@@ -158,6 +159,26 @@
             display:inline-block;
         }
         
+        .space{
+        	display:none;
+        }
+        
+        .sitelen-pona-mode .space{
+        	display:inline;
+        	opacity:0%;
+        	
+        }
+        
+        .sitelen-pona-mode .wide2{
+        	margin-left:2px;
+        	margin-right:2px;
+        	
+        }
+        .sitelen-pona-mode .wide1{
+        	margin-left:1px;
+        	margin-right:1px;        	
+        }
+                
         .sitelen-pona-mode .newline{
         	display:block;
         	opacity:0%;
@@ -703,20 +724,82 @@
             debugLog(`Displayed ${verseCount} verses (expected: ${expectedVerses})`);
         }
 
+		function rep(txt,n,d){
+		    if(typeof d==="undefined")d="";
+			let arr=[];
+			for(var i=0;i<n;i++){
+				arr.push(txt);
+			}
+			return arr.join(d);
+		}
+
         // Format verse content with proper name handling
         function formatVerseContent(text) {
+        
             // Handle names (words starting with &) by wrapping them in a span with class "name-rect"
-            
+            text=text.replace(/&/g,"~");
+            text=text.replace(/\.\ (\ )*/g,". ");
+            var pad="li";
             //if sitelen, need to figure out spaces
             //this just adds a span
-            text= text.replace(/([.;!])/g,(a,p,s)=>('<span class="newline">' + p + '</span>'));
+            text= text.replace(/([.;!])/g,(a,p,s)=>(' $' + p +'@'));
+            var textList=text.split("@");
+            text=textList.map(l=>{
+            		var words=l.split(" ");
+            		var last01=[];
+            		var last02=[];
+            		var last03=[];
+            		var last04=[];
+            		var wnum=0;
+            		
+            		
+            		l=words.map((w,i)=>{
+            		    if(w==="lili" || w ==="la" || w ==="la," || w ==="lili,"){
+            		    	w='<span class="wide2">' + w + '</span>';
+            		    }
+            		    if(w==="o" || w ==="o,"){
+            		    	w='<span class="wide1">' + w + '</span>';
+            		    }
+            		    if(w.indexOf("~")===0){
+            		    	let w2=convertNameToSitelenPona(w.replace("~",""));
+            		    	wnum+=w2.split(" ").length;
+            		    }
+            			if(w==="li"){
+            				if(last01.length>0){
+            					wnum=last01.at(-1);
+            					w='$&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> ' + w; 	
+            				}
+            				last01.push(wnum);
+            				last02=[];
+            				last03=[];
+            				last04=[];
+            			}else if(w==="e"){
+            				if(last02.length>0){
+            					wnum=last02.at(-1);
+            					w='$&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> '+w; 	
+            				}
+            				last02.push(wnum);
+            				last03=[];
+            				last04=[];
+            			}
+            			if(w.length>0){
+            			wnum++;
+            			}
+            			return w;
+            		}).join(" ");
+            		l=l.replace(/\$/g,'<span class="newline">');
+            		l=l.replace(/\@/g,'</span>');
+            		return l;
+            		//'<span class="newline">' + p + '</span>
+            	}).join("</span>");
+            
             
             //need to deal with : and ,
             text= text.replace(/([,:])/g,(a,p,s)=>('<span class="punct">' + p + '</span>'));
             
             
             
-            return text.replace(/&(\w+)/g, (a,p,s)=>
+            return text.replace(/~(\w+)/g, (a,p,s)=>
                 '<span class="name-tp">' + convertNameToTokiPona(p) + '</span>' + 
                 '<span class="name-rect">' + convertNameToSitelenPona(p) + '</span>');
         }
