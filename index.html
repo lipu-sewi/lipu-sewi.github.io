@@ -1061,12 +1061,15 @@
         function convertNameToSitelenPona(name){
             let lookup = nameLookup;
             let b= lookup[name];
-            if(!b)return name;
+            if(!b){
+            	b={proper:name};
+            }
             if(b.sitelen)return b.sitelen;
             if(!b.sitelen){
                 let build = "";
+                console.log(b);
                 if(fullDictionary.indexOf(b.proper.toLowerCase())>=0){
-                	return b.proper.toLowerCase() + " :";	
+                	return b.proper.toLowerCase() + " &nbsp;:";	
                 }
                 let ltrs=b.proper.split("");
                 let nm=ltrs.map(v=>[v,fallbackSitelen[v.toLowerCase()]])
