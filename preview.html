@@ -329,7 +329,7 @@
 		.nav-controls button {
     		background-color: #2c3e50; /* Darker color for navigation */
     		flex: 1;
-    		max-width: 150px;
+    		max-width: 200px;
 		}
     </style>
 </head>
@@ -501,6 +501,8 @@
             verse: null,
             sitelen: false
         };
+        
+        let sitelenNames={};
 
         // Debugging function
         function debugLog(message) {
@@ -689,6 +691,8 @@
             const lines = text.split('\n').filter(line => line.trim() !== '');
             const bookName = bibleBooks[currentState.testament][currentState.book].name;
             
+            sitelenNames={};
+            
             let html = `
                 <div class="chapter-header">
                     <h2 class="chapter-title">${bookName} ${currentState.chapter}</h2>
@@ -837,7 +841,7 @@
             
             return text.replace(/~(\w+)/g, (a,p,s)=>
                 '<span class="name-tp">' + convertNameToTokiPona(p) + '</span>' + 
-                '<span class="name-rect">' + convertNameToSitelenPona(p) + '</span>');
+                '<span class="name-rect">' + convertNameToSitelenPona(p,true) + '</span>');
         }
 
         // Apply sitelen pona font to verse content
@@ -1081,13 +1085,22 @@
             if(b.proper)return b.proper;
             return name;
         }
-        function convertNameToSitelenPona(name){
+        function convertNameToSitelenPona(name, count){
             let lookup = nameLookup;
             let b= lookup[name];
             if(!b){
             	b={proper:name};
             }
-            if(b.sitelen)return b.sitelen;
+            if(b.sitelen){
+            	
+            	if(count){
+            		if(sitelenNames[b.sitelen]){
+            			return sitelenNames[b.sitelen];
+            		}
+            		sitelenNames[b.sitelen]=b.sitelen.split(" ")[0];
+            	}
+            	return b.sitelen;
+            }
             if(!b.sitelen){
                 let build = "";
                 console.log(b);
@@ -1099,6 +1112,12 @@
                     .map(v=>(v[1])?v[1]:v[0])
                     .join(" ");
                 
+                if(count){
+                	if(sitelenNames[nm]){
+            			return sitelenNames[nm];
+            		}
+            		sitelenNames[nm]=nm.split(" ")[0];
+            	}
                 return nm;
             }
         }
