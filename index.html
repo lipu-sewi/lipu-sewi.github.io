@@ -317,6 +317,20 @@
         .toast.show {
             opacity: 1;
         }
+        
+        .nav-controls {
+    		display: flex;
+    		gap: 10px;
+    		justify-content: center;
+    		margin-top: 10px;
+    		width: 100%;
+		}
+		
+		.nav-controls button {
+    		background-color: #2c3e50; /* Darker color for navigation */
+    		flex: 1;
+    		max-width: 200px;
+		}
     </style>
 </head>
 <body>
@@ -346,6 +360,11 @@
             <label for="sitelen-pona-toggle">Show sitelen pona</label>
         </div>
     </div>
+    
+    <div class="nav-controls">
+    	<button id="prev-chapter">← Previous Chapter</button>
+    	<button id="next-chapter">Next Chapter→</button>
+	</div>
     
     <div id="missing-verses-container"></div>
     
@@ -1084,6 +1103,46 @@
             }
         }
 
+        function navigateChapter(direction) {
+    		const testament = testamentSelect.value;
+    		const bookKeys = Object.keys(bibleBooks[testament]);
+    		let bookIndex = bookKeys.indexOf(bookSelect.value);
+    		let currentChapter = parseInt(chapterSelect.value);
+    		const maxChapters = bibleBooks[testament][bookSelect.value].chapters;
+		
+    		if (direction === 'next') {
+        		if (currentChapter < maxChapters) {
+            		// Just go to next chapter
+            		chapterSelect.value = currentChapter + 1;
+        		} else if (bookIndex < bookKeys.length - 1) {
+            		// Go to first chapter of next book
+            		bookSelect.value = bookKeys[bookIndex + 1];
+            		populateChapters();
+            		chapterSelect.value = 1;
+        		} else {
+            		showToast("End of Testament");
+            		return;
+        		}
+    		} else { // direction === 'prev'
+        		if (currentChapter > 1) {
+            		// Just go to previous chapter
+            		chapterSelect.value = currentChapter - 1;
+        		} else if (bookIndex > 0) {
+            		// Go to last chapter of previous book
+            		bookSelect.value = bookKeys[bookIndex - 1];
+            		populateChapters();
+            		const prevBookMaxChapters = bibleBooks[testament][bookSelect.value].chapters;
+            		chapterSelect.value = prevBookMaxChapters;
+        		} else {
+            		showToast("Beginning of Testament");
+            		return;
+        		}
+    		}
+    		
+    		// Trigger the load
+    		currentState.verse = null; // Clear verse highlight on nav
+    		loadChapter();
+		}
         
         // Initialize the page
         async function init() {
@@ -1151,10 +1210,15 @@
             
             debugLog('Page initialized. Open browser console (F12) for additional debugging.');
             debugLog('Verse count data provided by Bolls Bible API');
+            
+            document.getElementById('prev-chapter').addEventListener('click', () => navigateChapter('prev'));
+			document.getElementById('next-chapter').addEventListener('click', () => navigateChapter('next'));
         }
 
         // Start the application
         init();
+        
+        
     </script>
 </body>
 </html>
