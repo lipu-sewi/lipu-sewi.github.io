@@ -162,6 +162,9 @@
         .space{
         	display:none;
         }
+        .newline2{
+        	display:none;
+        }
         
         .sitelen-pona-mode .space{
         	display:inline;
@@ -180,6 +183,10 @@
         }
                 
         .sitelen-pona-mode .newline{
+        	display:block;
+        	opacity:0%;
+        }
+        .sitelen-pona-mode .newline2{
         	display:block;
         	opacity:0%;
         }
@@ -742,7 +749,7 @@
             var pad="li";
             //if sitelen, need to figure out spaces
             //this just adds a span
-            text= text.replace(/([.;!])/g,(a,p,s)=>(' $' + p +'@'));
+            text= text.replace(/([.;!])/g,(a,p,s)=>('$' + p +'@'));
             var textList=text.split("@");
             text=textList.map(l=>{
             		var words=l.split(" ");
@@ -787,7 +794,7 @@
             			}
             			return w;
             		}).join(" ");
-            		l=l.replace(/\$/g,'<span class="newline">');
+            		l=l.replace(/\$/g,'<span class="newline2">');
             		l=l.replace(/\@/g,'</span>');
             		return l;
             		//'<span class="newline">' + p + '</span>
