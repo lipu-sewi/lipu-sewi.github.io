@@ -1092,11 +1092,11 @@
             	b={proper:name};
             }
             if(b.sitelen){
-            	
-            	if(count){
-            		if(sitelenNames[b.sitelen]){
+            	if(sitelenNames[b.sitelen]){
             			return sitelenNames[b.sitelen];
-            		}
+            	}
+            	if(count){
+            		
             		sitelenNames[b.sitelen]=b.sitelen.split(" ")[0];
             	}
             	return b.sitelen;
@@ -1111,11 +1111,10 @@
                 let nm=ltrs.map(v=>[v,fallbackSitelen[v.toLowerCase()]])
                     .map(v=>(v[1])?v[1]:v[0])
                     .join(" ");
-                
-                if(count){
-                	if(sitelenNames[nm]){
+                if(sitelenNames[nm]){
             			return sitelenNames[nm];
-            		}
+            	}
+                if(count){
             		sitelenNames[nm]=nm.split(" ")[0];
             	}
                 return nm;
