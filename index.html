@@ -186,7 +186,7 @@
         	
         }
         .sitelen-pona-mode .wide1{
-        	margin-left:1px;
+        	margin-left:2px;
         	margin-right:1px;        	
         }
                 
@@ -784,6 +784,9 @@
             text= text.replace(/([.;!:])/g,(a,p,s)=>('$' + p +'@'));
             var textList=text.split("@");
             var nstart=0;
+            var splitLaMin=8;
+            var splitLaTot=15;
+            
             text=textList.map(l=>{
             		var words=l.split(" ");
             		var last01=[];
@@ -798,15 +801,20 @@
             		}
             		
             		l=words.map((w,i)=>{
-            		    if(w==="lili" || w ==="la" || w ==="la," || w ==="lili,"){
+            		    var aw=w.replace(/[,.;]/g,"").trim();
+            		    //console.log(aw);
+            		    if(aw==="lili" || aw ==="la"){
             		    	w='<span class="wide2">' + w + '</span>';
             		    }
-            		    if(w==="o" || w ==="o," || w==="kin" || w ==="kin,"){
+            		    if(aw==="o" || aw==="kin"){
             		    	w='<span class="wide1">' + w + '</span>';
             		    }
             		    if(w.indexOf("~")===0){
             		    	let w2=convertNameToSitelenPona(w.replace("~",""));
             		    	wnum+=w2.split(" ").length;
+            		    }
+            		    if(aw==="la"){
+            		    	console.log("la:" + ((words.length-i)+wnum));
             		    }
             			if(w==="li"){
             				if(last01.length>0){
@@ -825,9 +833,27 @@
             				last02.push(wnum);
             				last03=[];
             				last04=[];
+            			}else if(w==="tawa"){
+            				if(last03.length>0){
+            					wnum=last03.at(-1);
+            					w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> '+w; 	
+            				}
+            				last03.push(wnum);
+            				last04=[];
+            			}else if((aw==="la") && wnum>splitLaMin && ((words.length-i)+wnum)>splitLaTot){
+            			    console.log("found la");
+            				wnum=1;
+            				w=w+'*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span>';
+            				
+            				last01=[];
+            				last02=[];
+            				last03=[];
+            				last04=[];
             			}
+            			
+            			
             			if(w.length>0){
-            			wnum++;
+            				wnum++;
             			}
             			return w;
             		}).join(" ");
@@ -1114,7 +1140,6 @@
             }
             if(!b.sitelen){
                 let build = "";
-                console.log(b);
                 if(fullDictionary.indexOf(b.proper.toLowerCase())>=0){
                 	return b.proper.toLowerCase() + " &nbsp;<span class='nudgeUp2'>:</span>";	
                 }
