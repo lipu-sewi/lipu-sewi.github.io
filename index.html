@@ -789,6 +789,7 @@
             
             text=textList.map(l=>{
             		var words=l.split(" ");
+            		var last00=[];
             		var last01=[];
             		var last02=[];
             		var last03=[];
@@ -816,7 +817,17 @@
             		    if(aw==="la"){
             		    	console.log("la:" + ((words.length-i)+wnum));
             		    }
-            			if(w==="li"){
+            		    if(aw==="o"){
+            				if(last00.length>0){
+            					wnum=last00.at(-1);
+            					w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> ' + w; 	
+            				}            				
+            				last00.push(wnum);
+            				last01=[];
+            				last02=[];
+            				last03=[];
+            				last04=[];
+            			}else if(aw==="li"){
             				if(last01.length>0){
             					wnum=last01.at(-1);
             					w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> ' + w; 	
@@ -825,7 +836,7 @@
             				last02=[];
             				last03=[];
             				last04=[];
-            			}else if(w==="e"){
+            			}else if(aw==="e"){
             				if(last02.length>0){
             					wnum=last02.at(-1);
             					w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> '+w; 	
@@ -833,7 +844,7 @@
             				last02.push(wnum);
             				last03=[];
             				last04=[];
-            			}else if(w==="tawa"){
+            			}else if(aw==="tawa"){
             				if(last03.length>0){
             					wnum=last03.at(-1);
             					w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> '+w; 	
@@ -845,6 +856,7 @@
             				wnum=1;
             				w=w+'*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span>';
             				
+            				last00=[];
             				last01=[];
             				last02=[];
             				last03=[];
