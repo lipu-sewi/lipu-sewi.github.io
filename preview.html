@@ -9,8 +9,9 @@
         @font-face{
             font-family: "LinjaJS";
             src:
-                url("https://cdn.jsdelivr.net/gh/janSame/linja-pona@master/linja-pona-4.2.woff2") format("woff2"),
-                url("https://cdn.jsdelivr.net/gh/janSame/linja-pona@master/linja-pona-4.2.woff") format("woff");
+                /*url("https://cdn.jsdelivr.net/gh/janSame/linja-pona@master/linja-pona-4.2.woff2") format("woff2"),*
+                url("https://cdn.jsdelivr.net/gh/janSame/linja-pona@master/linja-pona-4.2.woff") format("woff");*/
+                url("font/nasin-nanpa-4.0.2.woff2") format("woff2");
             font-display: swap;
         }
 
@@ -186,7 +187,7 @@
         	
         }
         .sitelen-pona-mode .wide1{
-        	margin-left:1px;
+        	margin-left:2px;
         	margin-right:1px;        	
         }
                 
@@ -776,34 +777,58 @@
         
             // Handle names (words starting with &) by wrapping them in a span with class "name-rect"
             text=text.replace(/&/g,"~");
-            text=text.replace(/([^~])([A-Z])/g,"$1~$2");
+            text=text.replace(/([^~A-Za-z])([A-Z])/g,"$1~$2");
             text=text.replace(/\.\ (\ )*/g,". ");
             var pad="li";
             //if sitelen, need to figure out spaces
             //this just adds a span
-            text= text.replace(/([.;!])/g,(a,p,s)=>('$' + p +'@'));
+            text= text.replace(/([.;!:])/g,(a,p,s)=>('$' + p +'@'));
             var textList=text.split("@");
+            var nstart=0;
+            var splitLaMin=8;
+            var splitLaTot=15;
+            
             text=textList.map(l=>{
             		var words=l.split(" ");
+            		var last00=[];
             		var last01=[];
             		var last02=[];
             		var last03=[];
             		var last04=[];
-            		var wnum=0;
+            		var wnum=nstart;
+            		var pref="";
             		
+            		if(nstart>0){
+            			pref='<span class="space">' + rep(pad,wnum," ") + '</span>';
+            		}
             		
             		l=words.map((w,i)=>{
-            		    if(w==="lili" || w ==="la" || w ==="la," || w ==="lili,"){
+            		    var aw=w.replace(/[,.;]/g,"").trim();
+            		    //console.log(aw);
+            		    if(aw==="lili" || aw ==="la"){
             		    	w='<span class="wide2">' + w + '</span>';
             		    }
-            		    if(w==="o" || w ==="o,"){
+            		    if(aw==="o" || aw==="kin"){
             		    	w='<span class="wide1">' + w + '</span>';
             		    }
             		    if(w.indexOf("~")===0){
             		    	let w2=convertNameToSitelenPona(w.replace("~",""));
             		    	wnum+=w2.split(" ").length;
             		    }
-            			if(w==="li"){
+            		    if(aw==="la"){
+            		    	console.log("la:" + ((words.length-i)+wnum));
+            		    }
+            		    if(aw==="o"){
+            				if(last00.length>0){
+            					wnum=last00.at(-1);
+            					w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> ' + w; 	
+            				}            				
+            				last00.push(wnum);
+            				last01=[];
+            				last02=[];
+            				last03=[];
+            				last04=[];
+            			}else if(aw==="li"){
             				if(last01.length>0){
             					wnum=last01.at(-1);
             					w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> ' + w; 	
@@ -812,7 +837,7 @@
             				last02=[];
             				last03=[];
             				last04=[];
-            			}else if(w==="e"){
+            			}else if(aw==="e"){
             				if(last02.length>0){
             					wnum=last02.at(-1);
             					w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> '+w; 	
@@ -820,23 +845,48 @@
             				last02.push(wnum);
             				last03=[];
             				last04=[];
+            			}else if(aw==="tawa"){
+            				if(last03.length>0){
+            					wnum=last03.at(-1);
+            					w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> '+w; 	
+            				}
+            				last03.push(wnum);
+            				last04=[];
+            			}else if((aw==="la") && wnum>splitLaMin && ((words.length-i)+wnum)>splitLaTot){
+            			    console.log("found la");
+            				wnum=1;
+            				w=w+'*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span>';
+            				
+            				last00=[];
+            				last01=[];
+            				last02=[];
+            				last03=[];
+            				last04=[];
             			}
+            			
+            			
             			if(w.length>0){
-            			wnum++;
+            				wnum++;
             			}
             			return w;
             		}).join(" ");
             		l=l.replace(/\*/g,'<span class="newline2">');
             		l=l.replace(/\$/g,'<span class="newline">');
             		l=l.replace(/\@/g,'</span>');
-            		return l;
+            		if(l.at(-1)===":"){
+            		   nstart=1;
+            		}else{
+            		   nstart=0;
+            		}
+            		
+            		return pref+l;
             		//'<span class="newline">' + p + '</span>
             	}).join("</span>");
             
             
             //need to deal with : and ,
-            text= text.replace(/([,:])/g,(a,p,s)=>('<span class="punct">' + p + '</span>'));
-            
+            text= text.replace(/([,])/g,(a,p,s)=>('<span class="punct">' + p + '</span>'));
+            text= text.replace(/[ ][ ]*/g," ");
             
             
             return text.replace(/~(\w+)/g, (a,p,s)=>
@@ -1092,18 +1142,17 @@
             	b={proper:name};
             }
             if(b.sitelen){
-            	
-            	if(count){
-            		if(sitelenNames[b.sitelen]){
+            	if(sitelenNames[b.sitelen]){
             			return sitelenNames[b.sitelen];
-            		}
+            	}
+            	if(count){
+            		
             		sitelenNames[b.sitelen]=b.sitelen.split(" ")[0];
             	}
             	return b.sitelen;
             }
             if(!b.sitelen){
                 let build = "";
-                console.log(b);
                 if(fullDictionary.indexOf(b.proper.toLowerCase())>=0){
                 	return b.proper.toLowerCase() + " &nbsp;<span class='nudgeUp2'>:</span>";	
                 }
@@ -1111,11 +1160,10 @@
                 let nm=ltrs.map(v=>[v,fallbackSitelen[v.toLowerCase()]])
                     .map(v=>(v[1])?v[1]:v[0])
                     .join(" ");
-                
-                if(count){
-                	if(sitelenNames[nm]){
+                if(sitelenNames[nm]){
             			return sitelenNames[nm];
-            		}
+            	}
+                if(count){
             		sitelenNames[nm]=nm.split(" ")[0];
             	}
                 return nm;
