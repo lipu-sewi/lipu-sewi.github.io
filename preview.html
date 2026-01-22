@@ -172,21 +172,21 @@
         	opacity:0%;
         	
         }
-        .sitelen-pona-mode .nudgeUp2{
+        .fudge .sitelen-pona-mode .nudgeUp2{
         	position: relative;
   			top: -2px;
         }
-        .sitelen-pona-mode .wide4{
+        .fudge .sitelen-pona-mode .wide4{
         	margin-left:4px;
         	margin-right:4px;
         	
         } 
-        .sitelen-pona-mode .wide2{
+        .fudge .sitelen-pona-mode .wide2{
         	margin-left:2px;
         	margin-right:2px;
         	
         }
-        .sitelen-pona-mode .wide1{
+        .fudge .sitelen-pona-mode .wide1{
         	margin-left:2px;
         	margin-right:1px;        	
         }
@@ -203,13 +203,23 @@
         	display:none;
         }
         
-        .sitelen-pona-mode .name-rect {
+        .fudge .sitelen-pona-mode .name-rect {
             display: inline-block;
             border: 2px solid #333;
             border-radius: 6px;
             padding: 4px 6px;
             margin: 0 2px;
         }
+        
+        .sitelen-pona-mode .name-rect {
+            display: inline-block;
+  			border: 3px solid #333;
+  			border-radius: 6px;
+  			padding: 8px 6px;
+  			margin: 0 3px;
+        }
+        
+        
 
         .sitelen-pona-mode .name-tp {
             display: none;
@@ -779,7 +789,7 @@
             text=text.replace(/&/g,"~");
             text=text.replace(/([^~A-Za-z])([A-Z])/g,"$1~$2");
             text=text.replace(/\.\ (\ )*/g,". ");
-            var pad="li";
+            var pad="la";
             //if sitelen, need to figure out spaces
             //this just adds a span
             text= text.replace(/([.;!:])/g,(a,p,s)=>('$' + p +'@'));
@@ -869,7 +879,7 @@
             				wnum++;
             			}
             			return w;
-            		}).join(" ");
+            		}).join("&#8203;");
             		l=l.replace(/\*/g,'<span class="newline2">');
             		l=l.replace(/\$/g,'<span class="newline">');
             		l=l.replace(/\@/g,'</span>');
@@ -1154,7 +1164,7 @@
             if(!b.sitelen){
                 let build = "";
                 if(fullDictionary.indexOf(b.proper.toLowerCase())>=0){
-                	return b.proper.toLowerCase() + " &nbsp;<span class='nudgeUp2'>:</span>";	
+                	return b.proper.toLowerCase() + "&#8203;<span class='nudgeUp2'>:</span>";	
                 }
                 let ltrs=b.proper.split("");
                 let nm=ltrs.map(v=>[v,fallbackSitelen[v.toLowerCase()]])
