@@ -156,6 +156,23 @@
             margin-bottom: 20px;
             border-left: 4px solid #ff9800;
         }
+        .latina-pona-mode .verse-number .sitelen{
+            display:none;
+        }
+        .sitelen-pona-mode .verse-number .latina{
+            display:none;
+        }
+        .sitelen-pona-mode .verse-number .sitelen{
+        	font-family: "LinjaJS", system-ui, serif;
+            font-size: 24px;
+            line-height: 0.5;
+            white-space: pre-wrap;
+            /* enable ligatures / contextual features used by linja fonts */
+            font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
+            font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
+            -webkit-font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
+            display:inline-block;
+        }
         
         .sitelen-pona-mode .verse-content {
             font-family: "LinjaJS", system-ui, serif;
@@ -522,6 +539,23 @@
 
         // Verse count cache to avoid repeated API calls
         const verseCountCache = {};
+        
+        const numberLookup={
+        1: "wan",
+		2: "tu",
+		3: "wan-tu",
+		4: "tu-tu",
+		5: "luka",
+		6: "wan-luka",
+		7: "tu-luka",
+		8: "luka wan-tu",
+		9: "luka tu-tu",
+		10: "luka-luka",
+		20: "mute",
+		40: "mute-mute",
+		100: "ali",
+		200: "ali-ali"
+        }
 
         // Current state
         let currentState = {
@@ -533,6 +567,23 @@
         };
         
         let sitelenNames={};
+        
+        function numberToSitPona(n){
+        	var nums=Object.keys(numberLookup).map(v=>v-0).sort((a,b)=>b-a);
+        	
+        	var list=[];
+        	for(var i=0;i<nums.length;i++){
+        		var bigN=nums[i];
+        		if(bigN<=n){
+        			list.push(numberLookup[bigN]);
+        			n=n-bigN;
+        			i--;
+        		}
+        		if(n<=0)break;
+        	}
+        	return list.join("&#8203;");
+        	
+        }
 
         // Debugging function
         function debugLog(message) {
@@ -746,7 +797,8 @@
                     
                     html += `
                         <div class="verse ${status === '!' ? 'solidified' : 'unsolidified'} ${isHighlighted ? 'highlighted' : ''}" id="verse-${verseNum}">
-                            <span class="verse-number">${verseNum}</span>
+                            <span class="verse-number"><span class="latina">${verseNum}</span><span class="sitelen">${numberToSitPona(verseNum)}</span></span>
+                            
                             <span class="verse-content">${formatVerseContent(content)}</span>
                         </div>
                     `;
