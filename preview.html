@@ -172,6 +172,15 @@
         	opacity:0%;
         	
         }
+        .latina-pona-mode .st-space{
+        	display:none;
+        }
+        .sitelen-pona-mode .lt-space{
+        	display:none;
+        }
+        .fudge .sitelen-pona-mode .lt-space{
+        	display:inline;
+        }
         .fudge .sitelen-pona-mode .nudgeUp2{
         	position: relative;
   			top: -2px;
@@ -879,7 +888,7 @@
             				wnum++;
             			}
             			return w;
-            		}).join("&#8203;");
+            		}).join("<span class='st-space'>&#8203;</span><span class='lt-space'> </span>");
             		l=l.replace(/\*/g,'<span class="newline2">');
             		l=l.replace(/\$/g,'<span class="newline">');
             		l=l.replace(/\@/g,'</span>');
