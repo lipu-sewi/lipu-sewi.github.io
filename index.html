@@ -143,6 +143,32 @@
 		}
 		
 		
+		.linja{
+			width: 13px;
+  		}
+  		.linja-sub{
+  			position: relative;
+  			top: 18px;
+  			left: -25px;
+  			font-family: monospace;
+  			font-weight: bolder;
+  			font-size: 12px;
+  			width: 20px;
+  			display: inline;
+  		}
+  		.linja-sub-sub{
+  			position: absolute;
+  			display: block;
+  			width: 24px;
+  			top: 1px;
+  			margin: auto;
+  			text-align: center;
+  			left: 1px;
+  		}
+  		.linja-sub-sub span{
+  			display: inline-block;
+  		}
+		
 		.sitelen-pona-mode .verse-number-lt {
 		    display:none;
 		}
@@ -184,7 +210,7 @@
         .sitelen-pona-mode .verse-number-st .sitelen{
         	font-family: "LinjaJS", system-ui, serif;
             font-size: 24px;
-            line-height: 0.5;
+            line-height: 0.4;
             white-space: pre-wrap;
             /* enable ligatures / contextual features used by linja fonts */
             font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
@@ -250,10 +276,12 @@
         .sitelen-pona-mode .newline{
         	display:block;
         	opacity:0%;
+        	height:22px;
         }
         .sitelen-pona-mode .newline2{
         	display:block;
         	opacity:0%;
+        	height:22px;
         }
         .sitelen-pona-mode .punct{
         	display:none;
@@ -264,7 +292,7 @@
             border: 2px solid #333;
             border-radius: 6px;
             padding: 4px 6px;
-            margin: 0 2px;
+            margin: 0 3px;
         }
         
         .sitelen-pona-mode .name-rect {
@@ -873,6 +901,41 @@
 			}
 			return arr.join(d);
 		}
+		
+		function nasinsitelenkalamapilinjalili(nm){
+			m=nm.toLowerCase();
+			wlist=fullDictionary.map(a=>a).sort((a,b)=>a.length-b.length);
+			let syms=[];
+			while(m.length>0){
+				let maxDot=0;
+				let maxWord=null;
+				for(var i=0;i<wlist.length;i++){
+					if(wlist[i][0]===m[0]){
+						let dot=1;
+						for(var j=1;j<Math.min(wlist[i].length,m.length);j++){
+							if(wlist[i][j]===m[j]){
+								dot++;
+							}else{
+								break;
+							}
+						}
+						if(dot>maxDot){
+							maxWord=wlist[i];
+							maxDot=dot;
+						}					
+					}
+				}
+				if(maxDot===0){
+					console.log("Nothing found!");
+					break;
+				}
+				
+				syms.push({"word":maxWord,"dots":maxDot});
+				m=m.substr(maxDot);
+			}
+			return syms;
+			
+		}
 
         // Format verse content with proper name handling
         function formatVerseContent(text) {
@@ -913,7 +976,9 @@
             		    	w='<span class="wide1">' + w + '</span>';
             		    }
             		    if(w.indexOf("~")===0){
-            		    	let w2=convertNameToSitelenPona(w.replace("~",""));
+            		    	let sp=convertNameToSitelenPona(w.replace("~",""));
+            		    	console.log(sp);
+            		    	let w2=sp.words;
             		    	wnum+=w2.split(" ").length;
             		    }
             		    if(aw.match("^[0-9][0-9]*$")){
@@ -956,7 +1021,6 @@
             				last03.push(wnum);
             				last04=[];
             			}else if((aw==="la") && wnum>splitLaMin && ((words.length-i)+wnum)>splitLaTot){
-            			    console.log("found la");
             				wnum=1;
             				w=w+'*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span>';
             				
@@ -965,6 +1029,12 @@
             				last02=[];
             				last03=[];
             				last04=[];
+            			}else if((aw==="en")){
+            				if(last04.length>0){
+            					wnum=last04.at(-1);
+            					w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> '+w; 	
+            				}
+            				last04.push(wnum);
             			}
             			
             			
@@ -994,7 +1064,7 @@
             
             return text.replace(/~(\w+)/g, (a,p,s)=>
                 '<span class="name-tp">' + convertNameToTokiPona(p) + '</span>' + 
-                '<span class="name-rect">' + convertNameToSitelenPona(p,true) + '</span>');
+                '<span class="name-rect">' + convertNameToSitelenPona(p,true).html + '</span>');
         }
 
         // Apply sitelen pona font to verse content
@@ -1249,27 +1319,43 @@
             			return sitelenNames[b.sitelen];
             	}
             	if(count){
-            		
-            		sitelenNames[b.sitelen]=b.sitelen.split(" ")[0];
+            		sitelenNames[b.sitelen]={"words":b.sitelen.split(" ")[0], "html":b.sitelen.split(" ")[0]};
             	}
-            	return b.sitelen;
+            	return {words:b.sitelen, html: b.sitelen};
             }
             if(!b.sitelen){
                 let build = "";
                 if(fullDictionary.indexOf(b.proper.toLowerCase())>=0){
-                	return b.proper.toLowerCase() + "&#8203;<span class='nudgeUp2'>:</span>";	
+                	return {words: (b.proper.toLowerCase() + " :"), html: (b.proper.toLowerCase() + "&#8203;<span class='nudgeUp2'>:</span>")};	
                 }
-                let ltrs=b.proper.split("");
-                let nm=ltrs.map(v=>[v,fallbackSitelen[v.toLowerCase()]])
-                    .map(v=>(v[1])?v[1]:v[0])
-                    .join(" ");
+                let nm="";
+                let htm="";
+                if(true){
+                	let nsllpj=nasinsitelenkalamapilinjalili(b.proper);
+                	htm=nsllpj.map(c=>{
+                		let dots=rep("&#8226;",c.dots);
+                		if(c.dots>3){
+                			dots=rep("&#8226;",Math.ceil(c.dots/2)) + "<span>" + rep("&#8226;",c.dots-Math.ceil(c.dots/2)) + "</span>";
+                		}
+                		return "<span class='linja'>" + c.word + "<span class='linja-sub'><span class='linja-sub-sub'>" + dots + "</span></span></span>";
+                	}).join("");
+                	nm=nsllpj.map(c=>c.word).join(" ");
+                	
+                }else{
+                
+                	let ltrs=b.proper.split("");
+                	nm=ltrs.map(v=>[v,fallbackSitelen[v.toLowerCase()]])
+                    	.map(v=>(v[1])?v[1]:v[0])
+                    	.join(" ");
+                    htm=nm;
+                }
                 if(sitelenNames[nm]){
             			return sitelenNames[nm];
             	}
                 if(count){
-            		sitelenNames[nm]=nm.split(" ")[0];
+            		sitelenNames[nm]={words:nm.split(" ")[0], html:nm.split(" ")[0]};
             	}
-                return nm;
+                return {words:nm, html:htm};
             }
         }
 
