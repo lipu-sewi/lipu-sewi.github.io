@@ -123,7 +123,16 @@
             border: 2px solid #ffd54f;
         }
         
-        .verse-number {
+        .verse-number-lt {
+  			font-weight: bold;
+  			margin-right: 5px;
+  			color: #7f8c8d;
+  			vertical-align: top;
+  			width: 20px;
+  			display: inline-block;
+  			margin-left: 5px;
+		}
+		.verse-number-st {
   			font-weight: bold;
   			margin-right: 5px;
   			color: #7f8c8d;
@@ -133,8 +142,13 @@
   			margin-left: 5px;
 		}
 		
-		.sitelen-pona-mode .verse-number {
+		
+		.sitelen-pona-mode .verse-number-lt {
+		    display:none;
+		}
+		.sitelen-pona-mode .verse-number-st {
 		    width: 80px;
+		    display:inline-block;
 		}
         
         .verse-content {
@@ -160,13 +174,14 @@
             margin-bottom: 20px;
             border-left: 4px solid #ff9800;
         }
-        .latina-pona-mode .verse-number .sitelen{
+        .latina-pona-mode .verse-number-st{
             display:none;
         }
-        .sitelen-pona-mode .verse-number .latina{
+        .sitelen-pona-mode .verse-number-lt{
             display:none;
         }
-        .sitelen-pona-mode .verse-number .sitelen{
+        
+        .sitelen-pona-mode .verse-number-st .sitelen{
         	font-family: "LinjaJS", system-ui, serif;
             font-size: 24px;
             line-height: 0.5;
@@ -802,10 +817,10 @@
                     
                     html += `
                         <div class="verse ${status === '!' ? 'solidified' : 'unsolidified'} ${isHighlighted ? 'highlighted' : ''}" id="verse-${verseNum}">
-                            <span class="verse-number"><span class="latina">${verseNum}</span></span>
+                            <span class="verse-number-lt"><span class="latina">${verseNum}</span></span>
                             
                             <span class="verse-content">${formatVerseContent(content)}</span>
-                            <span class="verse-numbr"><span class="sitelen">${numberToSitPona(verseNum)}</span></span>
+                            <span class="verse-number-st"><span class="sitelen">${numberToSitPona(verseNum)}</span></span>
                         </div>
                     `;
                 } else if (line.trim() !== '') {
