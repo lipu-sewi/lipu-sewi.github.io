@@ -145,7 +145,6 @@
 		
 		.linja{
 			width: 13px;
-  			display: inline-block;
   		}
   		.linja-sub{
   			position: relative;
@@ -164,7 +163,7 @@
   			top: 1px;
   			margin: auto;
   			text-align: center;
-  			left: -1px;
+  			left: 1px;
   		}
   		.linja-sub-sub span{
   			display: inline-block;
@@ -975,7 +974,9 @@
             		    	w='<span class="wide1">' + w + '</span>';
             		    }
             		    if(w.indexOf("~")===0){
-            		    	let w2=convertNameToSitelenPona(w.replace("~","")).words;
+            		    	let sp=convertNameToSitelenPona(w.replace("~",""));
+            		    	console.log(sp);
+            		    	let w2=sp.words;
             		    	wnum+=w2.split(" ").length;
             		    }
             		    if(aw.match("^[0-9][0-9]*$")){
@@ -1318,7 +1319,7 @@
             if(!b.sitelen){
                 let build = "";
                 if(fullDictionary.indexOf(b.proper.toLowerCase())>=0){
-                	return b.proper.toLowerCase() + "&#8203;<span class='nudgeUp2'>:</span>";	
+                	return {words: (b.proper.toLowerCase() + ":"), html: (b.proper.toLowerCase() + "&#8203;<span class='nudgeUp2'>:</span>")};	
                 }
                 let nm="";
                 let htm="";
