@@ -292,7 +292,7 @@
             border: 2px solid #333;
             border-radius: 6px;
             padding: 4px 6px;
-            margin: 0 2px;
+            margin: 0 3px;
         }
         
         .sitelen-pona-mode .name-rect {
@@ -1021,7 +1021,6 @@
             				last03.push(wnum);
             				last04=[];
             			}else if((aw==="la") && wnum>splitLaMin && ((words.length-i)+wnum)>splitLaTot){
-            			    console.log("found la");
             				wnum=1;
             				w=w+'*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span>';
             				
@@ -1030,6 +1029,12 @@
             				last02=[];
             				last03=[];
             				last04=[];
+            			}else if((aw==="en")){
+            				if(last04.length>0){
+            					wnum=last04.at(-1);
+            					w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> '+w; 	
+            				}
+            				last04.push(wnum);
             			}
             			
             			
@@ -1321,7 +1326,7 @@
             if(!b.sitelen){
                 let build = "";
                 if(fullDictionary.indexOf(b.proper.toLowerCase())>=0){
-                	return {words: (b.proper.toLowerCase() + ":"), html: (b.proper.toLowerCase() + "&#8203;<span class='nudgeUp2'>:</span>")};	
+                	return {words: (b.proper.toLowerCase() + " :"), html: (b.proper.toLowerCase() + "&#8203;<span class='nudgeUp2'>:</span>")};	
                 }
                 let nm="";
                 let htm="";
