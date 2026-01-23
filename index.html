@@ -9,8 +9,9 @@
         @font-face{
             font-family: "LinjaJS";
             src:
-                url("https://cdn.jsdelivr.net/gh/janSame/linja-pona@master/linja-pona-4.2.woff2") format("woff2"),
-                url("https://cdn.jsdelivr.net/gh/janSame/linja-pona@master/linja-pona-4.2.woff") format("woff");
+                /*url("https://cdn.jsdelivr.net/gh/janSame/linja-pona@master/linja-pona-4.2.woff2") format("woff2"),*
+                url("https://cdn.jsdelivr.net/gh/janSame/linja-pona@master/linja-pona-4.2.woff") format("woff");*/
+                url("font/nasin-nanpa-4.0.2.woff2") format("woff2");
             font-display: swap;
         }
 
@@ -100,9 +101,15 @@
             color: #2c3e50;
         }
         
-        .verse {
+        .latina-pona-mode .verse {
             margin-bottom: 15px;
             padding: 10px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        .sitelen-pona-mode .verse {
+            margin-bottom: 0px;
+            padding: 0px;
             border-radius: 4px;
             transition: background-color 0.2s;
         }
@@ -116,12 +123,33 @@
             border: 2px solid #ffd54f;
         }
         
-        .verse-number {
-            font-weight: bold;
-            margin-right: 5px;
-            color: #7f8c8d;
-            vertical-align:top;
-        }
+        .verse-number-lt {
+  			font-weight: bold;
+  			margin-right: 5px;
+  			color: #7f8c8d;
+  			vertical-align: top;
+  			width: 20px;
+  			display: inline-block;
+  			margin-left: 5px;
+		}
+		.verse-number-st {
+  			font-weight: bold;
+  			margin-right: 5px;
+  			color: #7f8c8d;
+  			vertical-align: top;
+  			width: 20px;
+  			display: inline-block;
+  			margin-left: 5px;
+		}
+		
+		
+		.sitelen-pona-mode .verse-number-lt {
+		    display:none;
+		}
+		.sitelen-pona-mode .verse-number-st {
+		    width: 80px;
+		    display:inline-block;
+		}
         
         .verse-content {
             display: inline;
@@ -146,6 +174,24 @@
             margin-bottom: 20px;
             border-left: 4px solid #ff9800;
         }
+        .latina-pona-mode .verse-number-st{
+            display:none;
+        }
+        .sitelen-pona-mode .verse-number-lt{
+            display:none;
+        }
+        
+        .sitelen-pona-mode .verse-number-st .sitelen{
+        	font-family: "LinjaJS", system-ui, serif;
+            font-size: 24px;
+            line-height: 0.5;
+            white-space: pre-wrap;
+            /* enable ligatures / contextual features used by linja fonts */
+            font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
+            font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
+            -webkit-font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
+            display:inline-block;
+        }
         
         .sitelen-pona-mode .verse-content {
             font-family: "LinjaJS", system-ui, serif;
@@ -157,6 +203,8 @@
             font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
             -webkit-font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
             display:inline-block;
+            margin-top:10px;
+            width:300px;
         }
         
         .space{
@@ -171,21 +219,30 @@
         	opacity:0%;
         	
         }
-        .sitelen-pona-mode .nudgeUp2{
+        .latina-pona-mode .st-space{
+        	display:none;
+        }
+        .sitelen-pona-mode .lt-space{
+        	display:none;
+        }
+        .fudge .sitelen-pona-mode .lt-space{
+        	display:inline;
+        }
+        .fudge .sitelen-pona-mode .nudgeUp2{
         	position: relative;
   			top: -2px;
         }
-        .sitelen-pona-mode .wide4{
+        .fudge .sitelen-pona-mode .wide4{
         	margin-left:4px;
         	margin-right:4px;
         	
         } 
-        .sitelen-pona-mode .wide2{
+        .fudge .sitelen-pona-mode .wide2{
         	margin-left:2px;
         	margin-right:2px;
         	
         }
-        .sitelen-pona-mode .wide1{
+        .fudge .sitelen-pona-mode .wide1{
         	margin-left:2px;
         	margin-right:1px;        	
         }
@@ -202,13 +259,23 @@
         	display:none;
         }
         
-        .sitelen-pona-mode .name-rect {
+        .fudge .sitelen-pona-mode .name-rect {
             display: inline-block;
             border: 2px solid #333;
             border-radius: 6px;
             padding: 4px 6px;
             margin: 0 2px;
         }
+        
+        .sitelen-pona-mode .name-rect {
+            display: inline-block;
+  			border: 3px solid #333;
+  			border-radius: 6px;
+  			padding: 8px 6px;
+  			margin: 0 3px;
+        }
+        
+        
 
         .sitelen-pona-mode .name-tp {
             display: none;
@@ -492,6 +559,23 @@
 
         // Verse count cache to avoid repeated API calls
         const verseCountCache = {};
+        
+        const numberLookup={
+        1: "wan",
+		2: "tu",
+		3: "tu-wan",
+		4: "tu-tu",
+		5: "luka",
+		6: "luka-wan",
+		7: "luka-tu",
+		8: "luka tu-luka",
+		9: "luka tu-tu",
+		10: "luka-luka",
+		20: "mute",
+		40: "mute-mute",
+		100: "ali",
+		200: "ali-ali"
+        }
 
         // Current state
         let currentState = {
@@ -503,6 +587,23 @@
         };
         
         let sitelenNames={};
+        
+        function numberToSitPona(n){
+        	var nums=Object.keys(numberLookup).map(v=>v-0).sort((a,b)=>b-a);
+        	
+        	var list=[];
+        	for(var i=0;i<nums.length;i++){
+        		var bigN=nums[i];
+        		if(bigN<=n){
+        			list.push(numberLookup[bigN]);
+        			n=n-bigN;
+        			i--;
+        		}
+        		if(n<=0)break;
+        	}
+        	return list.join("&#8203;");
+        	
+        }
 
         // Debugging function
         function debugLog(message) {
@@ -716,8 +817,10 @@
                     
                     html += `
                         <div class="verse ${status === '!' ? 'solidified' : 'unsolidified'} ${isHighlighted ? 'highlighted' : ''}" id="verse-${verseNum}">
-                            <span class="verse-number">${verseNum}</span>
+                            <span class="verse-number-lt"><span class="latina">${verseNum}</span></span>
+                            
                             <span class="verse-content">${formatVerseContent(content)}</span>
+                            <span class="verse-number-st"><span class="sitelen">${numberToSitPona(verseNum)}</span></span>
                         </div>
                     `;
                 } else if (line.trim() !== '') {
@@ -778,7 +881,7 @@
             text=text.replace(/&/g,"~");
             text=text.replace(/([^~A-Za-z])([A-Z])/g,"$1~$2");
             text=text.replace(/\.\ (\ )*/g,". ");
-            var pad="li";
+            var pad="la";
             //if sitelen, need to figure out spaces
             //this just adds a span
             text= text.replace(/([.;!:])/g,(a,p,s)=>('$' + p +'@'));
@@ -868,7 +971,7 @@
             				wnum++;
             			}
             			return w;
-            		}).join(" ");
+            		}).join("<span class='st-space'>&#8203;</span><span class='lt-space'> </span>");
             		l=l.replace(/\*/g,'<span class="newline2">');
             		l=l.replace(/\$/g,'<span class="newline">');
             		l=l.replace(/\@/g,'</span>');
@@ -1153,7 +1256,7 @@
             if(!b.sitelen){
                 let build = "";
                 if(fullDictionary.indexOf(b.proper.toLowerCase())>=0){
-                	return b.proper.toLowerCase() + " &nbsp;<span class='nudgeUp2'>:</span>";	
+                	return b.proper.toLowerCase() + "&#8203;<span class='nudgeUp2'>:</span>";	
                 }
                 let ltrs=b.proper.split("");
                 let nm=ltrs.map(v=>[v,fallbackSitelen[v.toLowerCase()]])
