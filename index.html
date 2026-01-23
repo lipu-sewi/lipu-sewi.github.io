@@ -947,7 +947,10 @@
             var pad="la";
             //if sitelen, need to figure out spaces
             //this just adds a span
+            text= text.replace(/@/g,"^^");
+            
             text= text.replace(/([.;!:])/g,(a,p,s)=>('$' + p +'@'));
+            text= text.replace(/[\^][\^]/g,"&#64;");
             var textList=text.split("@");
             var nstart=0;
             var splitLaMin=8;
