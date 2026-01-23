@@ -189,6 +189,7 @@
             -webkit-font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
             display:inline-block;
             margin-top:10px;
+            width:300px;
         }
         
         .space{
@@ -801,9 +802,10 @@
                     
                     html += `
                         <div class="verse ${status === '!' ? 'solidified' : 'unsolidified'} ${isHighlighted ? 'highlighted' : ''}" id="verse-${verseNum}">
-                            <span class="verse-number"><span class="latina">${verseNum}</span><span class="sitelen">${numberToSitPona(verseNum)}</span></span>
+                            <span class="verse-number"><span class="latina">${verseNum}</span></span>
                             
                             <span class="verse-content">${formatVerseContent(content)}</span>
+                            <span class="verse-numbr"><span class="sitelen">${numberToSitPona(verseNum)}</span></span>
                         </div>
                     `;
                 } else if (line.trim() !== '') {
