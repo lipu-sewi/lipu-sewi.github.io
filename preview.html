@@ -292,7 +292,7 @@
             border: 2px solid #333;
             border-radius: 6px;
             padding: 4px 6px;
-            margin: 0 3px;
+            margin: 0 4px;
         }
         
         .sitelen-pona-mode .name-rect {
@@ -300,7 +300,7 @@
   			border: 3px solid #333;
   			border-radius: 6px;
   			padding: 8px 6px;
-  			margin: 0 3px;
+  			margin: 0 4px;
         }
         
         
@@ -947,7 +947,10 @@
             var pad="la";
             //if sitelen, need to figure out spaces
             //this just adds a span
+            text= text.replace(/@/g,"^^");
+            
             text= text.replace(/([.;!:])/g,(a,p,s)=>('$' + p +'@'));
+            text= text.replace(/[\^][\^]/g,"&#64;");
             var textList=text.split("@");
             var nstart=0;
             var splitLaMin=8;
