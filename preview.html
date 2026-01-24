@@ -1067,7 +1067,7 @@
             
             return text.replace(/~(\w+)/g, (a,p,s)=>
                 '<span class="name-tp">' + convertNameToTokiPona(p) + '</span>' + 
-                '<span class="name-rect">&#xF1990' + convertNameToSitelenPona(p,true).html + '&#xF1991;</span>');
+                '<span class="name-rect">[' + convertNameToSitelenPona(p,true).html + ']</span>');
         }
 
         // Apply sitelen pona font to verse content
