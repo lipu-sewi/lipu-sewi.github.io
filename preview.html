@@ -149,6 +149,7 @@
   			width: 20px;
   			display: inline-block;
   			margin-top:5px;
+  			cursor:pointer;
 		}
 		
 		
@@ -496,6 +497,7 @@
     </div>
     
     <footer>
+        <p>Source code: <a href="https://github.com/lipu-sewi/lipu-sewi.github.io" target="_blank">GitHub Repository</a></p>
         <p>Text from <a href="https://github.com/PaulieGlot/lipu-sewi" target="_blank">lipu sewi GitHub repository</a></p>
         <p>Verse count data from <a href="https://bolls.life/api/" target="_blank">Bolls Bible API</a></p>
         <p>Note: Some chapters may not be available yet</p>
@@ -680,12 +682,22 @@
 
         // Update URL with current state
         function updateURL() {
+        
+        	const useFull=false;
+        
             const params = new URLSearchParams();
-            params.set('testament', currentState.testament);
-            params.set('book', currentState.book);
-            params.set('chapter', currentState.chapter);
-            if (currentState.verse) params.set('verse', currentState.verse);
-            if (currentState.sitelen) params.set('sitelen', 'true');
+            if(useFull){
+            	params.set('testament', currentState.testament);
+            	params.set('book', currentState.book);
+            	params.set('chapter', currentState.chapter);
+            	if (currentState.verse) params.set('verse', currentState.verse);
+            }else{
+            	var cite=currentState.book.replace(/_/g," ") + " " + currentState.chapter;
+            	if(currentState.verse) cite=cite + ":" + currentState.verse;
+            	params.set('cite', cite);            	
+            }
+            if (currentState.sitelen) params.set('sitelen', 'true');         
+            
             
             const newURL = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
             window.history.replaceState(null, '', newURL);
@@ -694,6 +706,27 @@
         // Parse URL parameters
         function parseURL() {
             const params = new URLSearchParams(window.location.search);
+            
+            if (params.has('cite')){
+            	let v=params.get('cite').replace(/^([1-3]*)[ ]/g,"$1_");
+            	let book = v.split(" ")[0].toLowerCase();
+            	let citeChap=v.split(" ")[1].split(":"); 
+            	let chapter=parseInt(citeChap[0].trim());
+            	let verse=null;
+            	if(citeChap.length>1){
+            		verse=parseInt(citeChap[1].trim());
+            	}
+            	if(bibleBooks.old_testament[book]){
+            		currentState.testament="old_testament";
+            	}else if(bibleBooks.new_testament[book]){
+            		currentState.testament="new_testament";
+            	}
+            	currentState.book=book;
+            	currentState.chapter=chapter;
+            	if(verse){
+            		currentState.verse=verse;
+            	}            	
+            }
             
             if (params.has('testament')) {
                 currentState.testament = params.get('testament');
@@ -918,6 +951,14 @@
                     }, 100);
                 }
             }
+            document.querySelectorAll(".verse-number-st").forEach(e=>e.onclick=()=>{
+            	document.querySelectorAll(".verse.highlighted")
+            		    .forEach(d=>d.classList.remove("highlighted"));
+            	var verse=e.parentNode.id.split("-")[1]-0;
+            	document.querySelector("#verse-" + verse).classList.add("highlighted");
+            	currentState.verse=verse;
+            	updateURL();
+            });
             
             debugLog(`Displayed ${verseCount} verses (expected: ${expectedVerses})`);
         }
@@ -990,11 +1031,6 @@
             
             text=textList.map(l=>{
             		var words=l.split(" ");
-            		var last00=[];
-            		var last01=[];
-            		var last02=[];
-            		var last03=[];
-            		var last04=[];
             		var pnstart=nstart;
             		var pref="";
             		
@@ -1002,12 +1038,17 @@
             		
             		
             		if(pnstart>0){
-            			pref='<span class="space">' + rep(pad,wnum," ") + '</span>';
+            			pref='<span class="space">' + rep(pad,pnstart," ") + '</span>';
             		}
             		
             		var redoList=[];
             		var redo=true;
             		while(redo){
+            			var last00=[];
+            			var last01=[];
+            			var last02=[];
+            			var last03=[];
+            			var last04=[];
             			var wnum=pnstart;
             		    redo=false;
             			var blist=[];
