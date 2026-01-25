@@ -134,12 +134,11 @@
 		}
 		.verse-number-st {
   			font-weight: bold;
-  			margin-right: 5px;
   			color: #7f8c8d;
   			vertical-align: top;
   			width: 20px;
   			display: inline-block;
-  			margin-left: 5px;
+  			margin-top:5px;
 		}
 		
 		
@@ -173,7 +172,7 @@
 		    display:none;
 		}
 		.sitelen-pona-mode .verse-number-st {
-		    width: 80px;
+		    width: 75px;
 		    display:inline-block;
 		}
         
@@ -230,7 +229,7 @@
             -webkit-font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
             display:inline-block;
             margin-top:10px;
-            width:390px;
+            width:384px;
         }
         
         .space{
@@ -868,8 +867,7 @@
                         <div class="verse ${status === '!' ? 'solidified' : 'unsolidified'} ${isHighlighted ? 'highlighted' : ''}" id="verse-${verseNum}">
                             <span class="verse-number-lt"><span class="latina">${verseNum}</span></span>
                             
-                            <span class="verse-content">${formatVerseContent(content)}</span>
-                            <span class="verse-number-st"><span class="sitelen">${numberToNasinNanpaPona(verseNum)}</span></span>
+                            <span class="verse-content">${formatVerseContent(content)}</span><span class="verse-number-st"><span class="sitelen">${numberToNasinNanpaPona(verseNum)}</span></span>
                         </div>
                     `;
                 } else if (line.trim() !== '') {
