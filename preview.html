@@ -141,6 +141,7 @@
   			width: 20px;
   			display: inline-block;
   			margin-left: 5px;
+  			cursor:pointer;
 		}
 		.verse-number-st {
   			font-weight: bold;
@@ -957,6 +958,17 @@
             	var verse=e.parentNode.id.split("-")[1]-0;
             	document.querySelector("#verse-" + verse).classList.add("highlighted");
             	currentState.verse=verse;
+            	showToast("URL updated");
+            	updateURL();
+            });
+            
+            document.querySelectorAll(".verse-number-lt").forEach(e=>e.onclick=()=>{
+            	document.querySelectorAll(".verse.highlighted")
+            		    .forEach(d=>d.classList.remove("highlighted"));
+            	var verse=e.parentNode.id.split("-")[1]-0;
+            	document.querySelector("#verse-" + verse).classList.add("highlighted");
+            	currentState.verse=verse;
+            	showToast("URL updated");
             	updateURL();
             });
             
