@@ -250,6 +250,14 @@
         	display:none;
         }
         
+        .isolated .verse{
+        	display:none;
+        }
+        
+        .isolated .verse.highlighted{
+        	display:block;
+        }
+        
         .sitelen-pona-mode .space{
         	display:inline;
         	opacity:0%;
@@ -463,6 +471,8 @@
         <div class="display-options">
             <input type="checkbox" id="sitelen-pona-toggle">
             <label for="sitelen-pona-toggle">Show sitelen pona</label>
+            <input type="checkbox" id="isolated-toggle">
+            <label for="isolated-toggle">Show selected verses only</label>
         </div>
     </div>
     
@@ -586,6 +596,7 @@
         const chapterSelect = document.getElementById('chapter-select');
         const loadButton = document.getElementById('load-button');
         const sitelenPonaToggle = document.getElementById('sitelen-pona-toggle');
+        const isolatedToggle = document.getElementById('isolated-toggle');
         const chapterDisplay = document.getElementById('chapter-display');
         const missingVersesContainer = document.getElementById('missing-verses-container');
         const debugContainer = document.getElementById('debug-container');
@@ -622,7 +633,8 @@
             book: 'genesis',
             chapter: 1,
             verse: null,
-            sitelen: false
+            sitelen: false,
+            isolated: false,
         };
         
         let sitelenNames={};
@@ -697,7 +709,9 @@
             	params.set('cite', cite);            	
             }
             if (currentState.sitelen) params.set('sitelen', 'true');         
-            
+            if (currentState.verse && currentState.isolated){
+            	params.set('iso', 'true');
+            }
             
             const newURL = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
             window.history.replaceState(null, '', newURL);
@@ -748,6 +762,11 @@
             if (params.has('sitelen')) {
                 currentState.sitelen = params.get('sitelen') === 'true';
                 sitelenPonaToggle.checked = currentState.sitelen;
+            }
+            
+            if (params.has('iso')) {
+                currentState.isolated = params.get('iso') === 'true';
+                isolatedToggle.checked = currentState.isolated;
             }
         }
 
@@ -1221,6 +1240,14 @@
             return ret;
         }
 
+		function applyIsolated() {
+            chapterDisplay.classList.add('isolated');
+        }
+        
+        function removeIsolated() {
+            chapterDisplay.classList.remove('isolated');
+        }
+        
         // Apply sitelen pona font to verse content
         function applySitelenPonaFont() {
             chapterDisplay.classList.add('sitelen-pona-mode');
@@ -1589,6 +1616,16 @@
                     applySitelenPonaFont();
                 } else {
                     removeSitelenPonaFont();
+                }
+                updateURL();
+            });
+            
+            isolatedToggle.addEventListener('change', function() {
+                currentState.isolated = this.checked;
+                if (this.checked) {
+                    applyIsolated();
+                } else {
+                    removeIsolated();
                 }
                 updateURL();
             });
