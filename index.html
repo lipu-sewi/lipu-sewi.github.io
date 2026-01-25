@@ -295,7 +295,7 @@
             margin: 0 4px;
         }
         
-        .sitelen-pona-mode .name-rect {
+        .man .sitelen-pona-mode .name-rect {
             display: inline-block;
   			border: 3px solid #333;
   			border-radius: 6px;
@@ -615,6 +615,27 @@
         };
         
         let sitelenNames={};
+        function numberToNasinNanpaPona(n){
+        	if(n<=100)return numberToSitPona(n);
+        	let str=n+"";
+        	if(str.length%2!==0){
+        		str="0"+str;
+        	}
+        	let lis=str.replace(/(..)/g,"$1,").replace(/,$/g,"").split(",").map(n=>n-0);
+        	//lis.pop();
+        	console.log(lis);
+        	return lis.map((v,i)=>{
+        		let pref="";
+        		if(v!==0){
+        			pref=numberToSitPona(v)+ " ";
+        		}
+        		if(i<lis.length-1){
+        			return pref + "ali";
+        		}else{
+        			return pref;
+        		}
+        	}).join(" ").trim();
+        }
         
         function numberToSitPona(n){
         	var nums=Object.keys(numberLookup).map(v=>v-0).sort((a,b)=>b-a);
@@ -629,7 +650,7 @@
         		}
         		if(n<=0)break;
         	}
-        	return list.join("&#8203;");
+        	return list.join(" ");
         	
         }
 
@@ -848,7 +869,7 @@
                             <span class="verse-number-lt"><span class="latina">${verseNum}</span></span>
                             
                             <span class="verse-content">${formatVerseContent(content)}</span>
-                            <span class="verse-number-st"><span class="sitelen">${numberToSitPona(verseNum)}</span></span>
+                            <span class="verse-number-st"><span class="sitelen">${numberToNasinNanpaPona(verseNum)}</span></span>
                         </div>
                     `;
                 } else if (line.trim() !== '') {
@@ -985,7 +1006,7 @@
             		    	wnum+=w2.split(" ").length;
             		    }
             		    if(aw.match("^[0-9][0-9]*$")){
-            		    	let w2=numberToSitPona(aw-0);
+            		    	let w2=numberToNasinNanpaPona(aw-0);
             		    	wnum+=w2.split(" ").length;
             		    	w=w.replace(aw,w2);
             		    }
@@ -1067,7 +1088,7 @@
             
             return text.replace(/~(\w+)/g, (a,p,s)=>
                 '<span class="name-tp">' + convertNameToTokiPona(p) + '</span>' + 
-                '<span class="name-rect">' + convertNameToSitelenPona(p,true).html + '</span>');
+                '<span class="name-rect">[' + convertNameToSitelenPona(p,true).html + ']</span>');
         }
 
         // Apply sitelen pona font to verse content
@@ -1329,18 +1350,15 @@
             if(!b.sitelen){
                 let build = "";
                 if(fullDictionary.indexOf(b.proper.toLowerCase())>=0){
-                	return {words: (b.proper.toLowerCase() + " :"), html: (b.proper.toLowerCase() + "&#8203;<span class='nudgeUp2'>:</span>")};	
+                	return {words: (b.proper.toLowerCase() + ":"), html: (b.proper.toLowerCase() + "&#xF199D;")};	
                 }
                 let nm="";
                 let htm="";
                 if(true){
                 	let nsllpj=nasinsitelenkalamapilinjalili(b.proper);
                 	htm=nsllpj.map(c=>{
-                		let dots=rep("&#8226;",c.dots);
-                		if(c.dots>3){
-                			dots=rep("&#8226;",Math.ceil(c.dots/2)) + "<span>" + rep("&#8226;",c.dots-Math.ceil(c.dots/2)) + "</span>";
-                		}
-                		return "<span class='linja'>" + c.word + "<span class='linja-sub'><span class='linja-sub-sub'>" + dots + "</span></span></span>";
+                		let dots=rep(",",c.dots);
+                		return c.word + dots;
                 	}).join("");
                 	nm=nsllpj.map(c=>c.word).join(" ");
                 	
