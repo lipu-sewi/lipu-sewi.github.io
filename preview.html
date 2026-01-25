@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>lipu sewi - Toki Pona Bible</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <style>
-        /* === load linja-pona from jsDelivr (woff2 then woff) === */
+        /* === load nasin-nanpa === */
         @font-face{
-            font-family: "LinjaJS";
+            font-family: "NasinNanpa";
             src:
-                /*url("https://cdn.jsdelivr.net/gh/janSame/linja-pona@master/linja-pona-4.2.woff2") format("woff2"),*
-                url("https://cdn.jsdelivr.net/gh/janSame/linja-pona@master/linja-pona-4.2.woff") format("woff");*/
                 url("font/nasin-nanpa-4.0.2.woff2") format("woff2");
             font-display: swap;
         }
@@ -219,11 +218,11 @@
         }
         
         .sitelen-pona-mode .verse-number-st .sitelen{
-        	font-family: "LinjaJS", system-ui, serif;
+        	font-family: "NasinNanpa", system-ui, serif;
             font-size: 24px;
             line-height: 0.4;
             white-space: pre-wrap;
-            /* enable ligatures / contextual features used by linja fonts */
+            /* enable ligatures / contextual features used by nasin nanpa font */
             font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
             font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
             -webkit-font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
@@ -231,11 +230,11 @@
         }
         
         .sitelen-pona-mode .verse-content {
-            font-family: "LinjaJS", system-ui, serif;
+            font-family: "NasinNanpa", system-ui, serif;
             font-size: 24px;
             line-height: 0.5;
             white-space: pre-wrap;
-            /* enable ligatures / contextual features used by linja fonts */
+            /* enable ligatures / contextual features used by nasin nanpa fonts */
             font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
             font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
             -webkit-font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
@@ -1235,15 +1234,15 @@
         }
 
         // Font loading check function
-        async function checkLinja() {
+        async function checkFont() {
             statusText.textContent = 'loading font…';
             try {
-                // 1) Ask the browser to load "LinjaJS" (this triggers fetch if needed).
-                await document.fonts.load('16px "LinjaJS"');
+                // 1) Ask the browser to load "NasinNanpa" (this triggers fetch if needed).
+                await document.fonts.load('16px "NasinNanpa"');
                 // 2) Wait for font subsystem to be ready (helps with network latency)
                 await document.fonts.ready;
                 // 3) Check whether the font is available to the renderer
-                const available = document.fonts.check('16px "LinjaJS"');
+                const available = document.fonts.check('16px "NasinNanpa"');
                 statusText.textContent = available ? 'loaded' : 'not detected (partial or blocked)';
                 // Force a repaint so glyphs appear immediately if available
                 if (sitelenPonaToggle.checked) {
@@ -1599,10 +1598,10 @@
                 statusText.textContent = 'retrying…';
                 try {
                     // re-attempt loading — calling fonts.load again nudges the browser
-                    await document.fonts.load('1em "LinjaJS"');
+                    await document.fonts.load('1em "NasinNanpa"');
                     await document.fonts.ready;
                 } catch(e) { /* ignore */ }
-                await checkLinja();
+                await checkFont();
             });
             
             // Share button
@@ -1614,7 +1613,7 @@
             });
             
             // Initial font check
-            checkLinja();
+            checkFont();
             
             debugLog('Page initialized. Open browser console (F12) for additional debugging.');
             debugLog('Verse count data provided by Bolls Bible API');
