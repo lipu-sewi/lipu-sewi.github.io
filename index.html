@@ -6,12 +6,10 @@
     <title>lipu sewi - Toki Pona Bible</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <style>
-        /* === load linja-pona from jsDelivr (woff2 then woff) === */
+        /* === load nasin-nanpa === */
         @font-face{
-            font-family: "LinjaJS";
+            font-family: "NasinNanpa";
             src:
-                /*url("https://cdn.jsdelivr.net/gh/janSame/linja-pona@master/linja-pona-4.2.woff2") format("woff2"),*
-                url("https://cdn.jsdelivr.net/gh/janSame/linja-pona@master/linja-pona-4.2.woff") format("woff");*/
                 url("font/nasin-nanpa-4.0.2.woff2") format("woff2");
             font-display: swap;
         }
@@ -40,6 +38,10 @@
         h1 {
             color: #2c3e50;
             margin-bottom: 10px;
+        }
+        
+        .embed .full-view{
+        	display:none;
         }
         
         .controls {
@@ -220,11 +222,11 @@
         }
         
         .sitelen-pona-mode .verse-number-st .sitelen{
-        	font-family: "LinjaJS", system-ui, serif;
+        	font-family: "NasinNanpa", system-ui, serif;
             font-size: 24px;
             line-height: 0.4;
             white-space: pre-wrap;
-            /* enable ligatures / contextual features used by linja fonts */
+            /* enable ligatures / contextual features used by nasin nanpa font */
             font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
             font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
             -webkit-font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
@@ -232,11 +234,11 @@
         }
         
         .sitelen-pona-mode .verse-content {
-            font-family: "LinjaJS", system-ui, serif;
+            font-family: "NasinNanpa", system-ui, serif;
             font-size: 24px;
             line-height: 0.5;
             white-space: pre-wrap;
-            /* enable ligatures / contextual features used by linja fonts */
+            /* enable ligatures / contextual features used by nasin nanpa fonts */
             font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
             font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
             -webkit-font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
@@ -250,6 +252,14 @@
         }
         .newline2{
         	display:none;
+        }
+        
+        .isolated .verse{
+        	display:none;
+        }
+        
+        .isolated .verse.highlighted{
+        	display:block;
         }
         
         .sitelen-pona-mode .space{
@@ -440,13 +450,13 @@
 		}
     </style>
 </head>
-<body>
-    <header>
+<body class="embed">
+    <header class="full-view">
         <h1>lipu sewi</h1>
         <p>Bible in Toki Pona</p>
     </header>
     
-    <div class="controls">
+    <div class="controls full-view">
         <select id="testament-select">
             <option value="old_testament">Old Testament</option>
             <option value="new_testament">New Testament</option>
@@ -465,10 +475,12 @@
         <div class="display-options">
             <input type="checkbox" id="sitelen-pona-toggle">
             <label for="sitelen-pona-toggle">Show sitelen pona</label>
+            <input type="checkbox" id="isolated-toggle">
+            <label for="isolated-toggle">Show selected verses only</label>
         </div>
     </div>
     
-    <div class="nav-controls">
+    <div class="nav-controls full-view">
     	<button id="prev-chapter">← Previous Chapter</button>
     	<button id="next-chapter">Next Chapter→</button>
 	</div>
@@ -479,26 +491,26 @@
         <div class="loading">Select a book and chapter to begin</div>
     </div>
 
-    <div class="share-section">
+    <div class="share-section full-view">
         <button id="share-button" class="share-btn">Copy Link to Share</button>
     </div>
 
-    <div class="font-status">
+    <div class="font-status full-view">
         Font status: <span id="statusText">checking…</span>
         <button id="reload" class="reload-btn" title="Try re-loading the font">Reload Font</button>
     </div>
 
-    <div class="debug-toggle">
+    <div class="debug-toggle full-view">
         <input type="checkbox" id="debug-toggle">
         <label for="debug-toggle">Show Debug Information</label>
     </div>
 
-    <div id="debug-container" class="debug-info">
+    <div id="debug-container" class="debug-info full-view">
         <h3>Debug Information</h3>
         <div id="debug-info"></div>
     </div>
     
-    <footer>
+    <footer class="full-view">
         <p>Source code: <a href="https://github.com/lipu-sewi/lipu-sewi.github.io" target="_blank">GitHub Repository</a></p>
         <p>Text from <a href="https://github.com/PaulieGlot/lipu-sewi" target="_blank">lipu sewi GitHub repository</a></p>
         <p>Verse count data from <a href="https://bolls.life/api/" target="_blank">Bolls Bible API</a></p>
@@ -588,6 +600,7 @@
         const chapterSelect = document.getElementById('chapter-select');
         const loadButton = document.getElementById('load-button');
         const sitelenPonaToggle = document.getElementById('sitelen-pona-toggle');
+        const isolatedToggle = document.getElementById('isolated-toggle');
         const chapterDisplay = document.getElementById('chapter-display');
         const missingVersesContainer = document.getElementById('missing-verses-container');
         const debugContainer = document.getElementById('debug-container');
@@ -624,7 +637,9 @@
             book: 'genesis',
             chapter: 1,
             verse: null,
-            sitelen: false
+            sitelen: false,
+            isolated: false,
+            embed: false
         };
         
         let sitelenNames={};
@@ -699,7 +714,13 @@
             	params.set('cite', cite);            	
             }
             if (currentState.sitelen) params.set('sitelen', 'true');         
+            if (currentState.verse && currentState.isolated){
+            	params.set('iso', 'true');
+            }
             
+            if (currentState.embed){
+            	params.set('embed', 'true');
+            }
             
             const newURL = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
             window.history.replaceState(null, '', newURL);
@@ -750,6 +771,14 @@
             if (params.has('sitelen')) {
                 currentState.sitelen = params.get('sitelen') === 'true';
                 sitelenPonaToggle.checked = currentState.sitelen;
+            }
+            
+            if (params.has('iso')) {
+                currentState.isolated = params.get('iso') === 'true';
+                isolatedToggle.checked = currentState.isolated;
+            }
+            if (params.has('embed')) {
+                currentState.embed = params.get('embed') === 'true';
             }
         }
 
@@ -879,6 +908,17 @@
                 debugLog(`Failed to load chapter: ${error.message}`);
             }
         }
+        
+        //TODO Finish this
+        function getCurrentVerseList(){
+        	var vs=currentState.verse.split("-");
+        	if(vs.length===1)return vs;
+        	var fvs=[];
+        	for(var i=vs[0]-0;i<=vs[1]-0;i++){
+        		fvs.push(i);
+        	}
+        	return fvs;
+        }
 
         // Display the chapter content
         function displayChapter(text, expectedVerses) {
@@ -940,9 +980,15 @@
             chapterDisplay.innerHTML = html;
             
             // Apply sitelen pona font if toggled
+            if (isolatedToggle.checked) {
+                applyIsolated();
+            }
+            
+            // Apply sitelen pona font if toggled
             if (sitelenPonaToggle.checked) {
                 applySitelenPonaFont();
             }
+            
             
             // Scroll to highlighted verse if specified
             if (currentState.verse) {
@@ -962,6 +1008,9 @@
             		currentState.verse=verse;
             	}else{
             		currentState.verse=null;
+            		currentState.isolated=false;
+            		isolatedToggle.checked = currentState.isolated;
+            		removeIsolated();
             	}
             	showToast("URL updated");
             	updateURL();
@@ -976,6 +1025,9 @@
             		currentState.verse=verse;
             	}else{
             		currentState.verse=null;
+            		currentState.isolated=false;
+            		isolatedToggle.checked = currentState.isolated;
+            		removeIsolated();
             	}
             	showToast("URL updated");
             	updateURL();
@@ -1223,6 +1275,14 @@
             return ret;
         }
 
+		function applyIsolated() {
+            chapterDisplay.classList.add('isolated');
+        }
+        
+        function removeIsolated() {
+            chapterDisplay.classList.remove('isolated');
+        }
+        
         // Apply sitelen pona font to verse content
         function applySitelenPonaFont() {
             chapterDisplay.classList.add('sitelen-pona-mode');
@@ -1236,15 +1296,15 @@
         }
 
         // Font loading check function
-        async function checkLinja() {
+        async function checkFont() {
             statusText.textContent = 'loading font…';
             try {
-                // 1) Ask the browser to load "LinjaJS" (this triggers fetch if needed).
-                await document.fonts.load('16px "LinjaJS"');
+                // 1) Ask the browser to load "NasinNanpa" (this triggers fetch if needed).
+                await document.fonts.load('16px "NasinNanpa"');
                 // 2) Wait for font subsystem to be ready (helps with network latency)
                 await document.fonts.ready;
                 // 3) Check whether the font is available to the renderer
-                const available = document.fonts.check('16px "LinjaJS"');
+                const available = document.fonts.check('16px "NasinNanpa"');
                 statusText.textContent = available ? 'loaded' : 'not detected (partial or blocked)';
                 // Force a repaint so glyphs appear immediately if available
                 if (sitelenPonaToggle.checked) {
@@ -1407,8 +1467,7 @@
 "lanpan",
 "n",
 "misikeke",
-"ku"
-        ];
+"ku"];
         const fallbackSitelen={
             'a' : 'awen',
             'e' : 'e',
@@ -1555,9 +1614,15 @@
         
         // Initialize the page
         async function init() {
-            await loadNames();
+        
             // Parse URL parameters
             parseURL();
+            
+            if(!currentState.embed){
+            	document.body.classList.remove("embed");
+            }
+        
+            await loadNames();
             
             // Populate dropdowns
             populateBooks();
@@ -1595,15 +1660,25 @@
                 updateURL();
             });
             
+            isolatedToggle.addEventListener('change', function() {
+                currentState.isolated = this.checked;
+                if (this.checked) {
+                    applyIsolated();
+                } else {
+                    removeIsolated();
+                }
+                updateURL();
+            });
+            
             // Allow manual font reload
             reloadBtn.addEventListener('click', async () => {
                 statusText.textContent = 'retrying…';
                 try {
                     // re-attempt loading — calling fonts.load again nudges the browser
-                    await document.fonts.load('1em "LinjaJS"');
+                    await document.fonts.load('1em "NasinNanpa"');
                     await document.fonts.ready;
                 } catch(e) { /* ignore */ }
-                await checkLinja();
+                await checkFont();
             });
             
             // Share button
@@ -1615,7 +1690,7 @@
             });
             
             // Initial font check
-            checkLinja();
+            checkFont();
             
             debugLog('Page initialized. Open browser console (F12) for additional debugging.');
             debugLog('Verse count data provided by Bolls Bible API');
