@@ -1336,11 +1336,8 @@
                 if(true){
                 	let nsllpj=nasinsitelenkalamapilinjalili(b.proper);
                 	htm=nsllpj.map(c=>{
-                		let dots=rep("&#8226;",c.dots);
-                		if(c.dots>3){
-                			dots=rep("&#8226;",Math.ceil(c.dots/2)) + "<span>" + rep("&#8226;",c.dots-Math.ceil(c.dots/2)) + "</span>";
-                		}
-                		return "<span class='linja'>" + c.word + "<span class='linja-sub'><span class='linja-sub-sub'>" + dots + "</span></span></span>";
+                		let dots=rep(",",c.dots);
+                		return c.word + dots";
                 	}).join("");
                 	nm=nsllpj.map(c=>c.word).join(" ");
                 	
