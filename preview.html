@@ -40,6 +40,10 @@
             margin-bottom: 10px;
         }
         
+        .embed .full-view{
+        	display:none;
+        }
+        
         .controls {
             display: flex;
             flex-wrap: wrap;
@@ -446,13 +450,13 @@
 		}
     </style>
 </head>
-<body>
-    <header>
+<body class="embed">
+    <header class="full-view">
         <h1>lipu sewi</h1>
         <p>Bible in Toki Pona</p>
     </header>
     
-    <div class="controls">
+    <div class="controls full-view">
         <select id="testament-select">
             <option value="old_testament">Old Testament</option>
             <option value="new_testament">New Testament</option>
@@ -476,7 +480,7 @@
         </div>
     </div>
     
-    <div class="nav-controls">
+    <div class="nav-controls full-view">
     	<button id="prev-chapter">← Previous Chapter</button>
     	<button id="next-chapter">Next Chapter→</button>
 	</div>
@@ -487,26 +491,26 @@
         <div class="loading">Select a book and chapter to begin</div>
     </div>
 
-    <div class="share-section">
+    <div class="share-section full-view">
         <button id="share-button" class="share-btn">Copy Link to Share</button>
     </div>
 
-    <div class="font-status">
+    <div class="font-status full-view">
         Font status: <span id="statusText">checking…</span>
         <button id="reload" class="reload-btn" title="Try re-loading the font">Reload Font</button>
     </div>
 
-    <div class="debug-toggle">
+    <div class="debug-toggle full-view">
         <input type="checkbox" id="debug-toggle">
         <label for="debug-toggle">Show Debug Information</label>
     </div>
 
-    <div id="debug-container" class="debug-info">
+    <div id="debug-container full-view" class="debug-info">
         <h3>Debug Information</h3>
         <div id="debug-info"></div>
     </div>
     
-    <footer>
+    <footer class="full-view">
         <p>Source code: <a href="https://github.com/lipu-sewi/lipu-sewi.github.io" target="_blank">GitHub Repository</a></p>
         <p>Text from <a href="https://github.com/PaulieGlot/lipu-sewi" target="_blank">lipu sewi GitHub repository</a></p>
         <p>Verse count data from <a href="https://bolls.life/api/" target="_blank">Bolls Bible API</a></p>
@@ -635,6 +639,7 @@
             verse: null,
             sitelen: false,
             isolated: false,
+            embed: false
         };
         
         let sitelenNames={};
@@ -713,6 +718,10 @@
             	params.set('iso', 'true');
             }
             
+            if (currentState.embed){
+            	params.set('embed', 'true');
+            }
+            
             const newURL = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
             window.history.replaceState(null, '', newURL);
         }
@@ -767,6 +776,9 @@
             if (params.has('iso')) {
                 currentState.isolated = params.get('iso') === 'true';
                 isolatedToggle.checked = currentState.isolated;
+            }
+            if (params.has('embed')) {
+                currentState.embed = params.get('embed') === 'true';
             }
         }
 
@@ -896,6 +908,17 @@
                 debugLog(`Failed to load chapter: ${error.message}`);
             }
         }
+        
+        //TODO Finish this
+        function getCurrentVerseList(){
+        	var vs=currentState.verse.split("-");
+        	if(vs.length===1)return vs;
+        	var fvs=[];
+        	for(var i=vs[0]-0;i<=vs[1]-0;i++){
+        		fvs.push(i);
+        	}
+        	return fvs;
+        }
 
         // Display the chapter content
         function displayChapter(text, expectedVerses) {
@@ -957,12 +980,19 @@
             chapterDisplay.innerHTML = html;
             
             // Apply sitelen pona font if toggled
+            if (isolatedToggle.checked) {
+                applyIsolated();
+            }
+            
+            // Apply sitelen pona font if toggled
             if (sitelenPonaToggle.checked) {
                 applySitelenPonaFont();
             }
             
+            
             // Scroll to highlighted verse if specified
             if (currentState.verse) {
+            	let verses=currentState.verse.
                 const verseElement = document.getElementById(`verse-${currentState.verse}`);
                 if (verseElement) {
                     setTimeout(() => {
@@ -1432,8 +1462,7 @@
 "lanpan",
 "n",
 "misikeke",
-"ku"
-        ];
+"ku"];
         const fallbackSitelen={
             'a' : 'awen',
             'e' : 'e',
@@ -1580,9 +1609,15 @@
         
         // Initialize the page
         async function init() {
-            await loadNames();
+        
             // Parse URL parameters
             parseURL();
+            
+            if(!currentState.embed){
+            	document.body.classList.remove("embed");
+            }
+        
+            await loadNames();
             
             // Populate dropdowns
             populateBooks();
