@@ -1010,6 +1010,7 @@
             		currentState.verse=null;
             		currentState.isolated=false;
             		isolatedToggle.checked = currentState.isolated;
+            		removeIsolated();
             	}
             	showToast("URL updated");
             	updateURL();
@@ -1024,6 +1025,9 @@
             		currentState.verse=verse;
             	}else{
             		currentState.verse=null;
+            		currentState.isolated=false;
+            		isolatedToggle.checked = currentState.isolated;
+            		removeIsolated();
             	}
             	showToast("URL updated");
             	updateURL();
