@@ -61,12 +61,53 @@
      inkscape:label="Canvas"
      transform="translate(-12.210335,-33.85545)">
     <rect
-       style="display:inline;fill:#fff1cc;fill-opacity:0.9;stroke:none;stroke-width:0.120266;stroke-opacity:1"
+       style="display:inline;fill:#fff1cc;fill-opacity:0.9;stroke:none;stroke-width:0.065028;stroke-opacity:1"
        id="rect20"
-       width="50"
-       height="50"
-       x="12.210335"
-       y="33.85545" />
+       width="23.125114"
+       height="31.606543"
+       x="36.634277"
+       y="-56.471775"
+       transform="matrix(-2.9121766e-4,0.99999996,-0.99999995,-3.076559e-4,0,0)" />
+    <rect
+       style="display:inline;fill:#fff1cc;fill-opacity:0.9;stroke:none;stroke-width:0.065028;stroke-opacity:1"
+       id="rect20-6"
+       width="23.125114"
+       height="31.606543"
+       x="53.06279"
+       y="-54.092754"
+       transform="matrix(-2.9121766e-4,0.99999996,-0.99999995,-3.076559e-4,0,0)" />
+    <rect
+       style="display:inline;fill:#fff1cc;fill-opacity:0.9;stroke:none;stroke-width:0.0373447;stroke-opacity:1"
+       id="rect20-6-3"
+       width="21.54879"
+       height="11.186514"
+       x="60.405083"
+       y="-31.321686"
+       transform="matrix(-1.106105e-4,0.99999999,-0.99999967,-8.1000272e-4,0,0)" />
+    <rect
+       style="display:inline;fill:#fff1cc;fill-opacity:0.9;stroke:none;stroke-width:0.0186453;stroke-opacity:1"
+       id="rect20-6-3-5"
+       width="10.103263"
+       height="5.9475899"
+       x="67.737587"
+       y="-24.85968"
+       transform="matrix(-1.254307e-4,0.99999999,-0.99999974,-7.1429736e-4,0,0)" />
+    <rect
+       style="display:inline;fill:#fff1cc;fill-opacity:0.9;stroke:none;stroke-width:0.0169712;stroke-opacity:1"
+       id="rect20-6-3-5-6"
+       width="4.5658693"
+       height="10.903546"
+       x="36.696556"
+       y="-26.376705"
+       transform="matrix(-5.0882554e-4,0.99999987,-0.99999998,-1.7608163e-4,0,0)" />
+    <rect
+       style="display:inline;fill:#fff1cc;fill-opacity:0.9;stroke:none;stroke-width:0.0313485;stroke-opacity:1"
+       id="rect20-6-7"
+       width="4.766458"
+       height="35.636719"
+       x="76.680016"
+       y="-62.407162"
+       transform="matrix(-0.03004925,0.99954842,-1,-5.621605e-5,0,0)" />
   </g>
   <g
      inkscape:groupmode="layer"
