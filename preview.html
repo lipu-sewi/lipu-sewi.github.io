@@ -615,6 +615,27 @@
         };
         
         let sitelenNames={};
+        function numberToNasinNanpaPona(n){
+        	if(n<=100)return numberToSitPona(n);
+        	let str=n+"";
+        	if(str.length%2!==0){
+        		str="0"+str;
+        	}
+        	let lis=str.replace(/(..)/g,"$1,").replace(/,$/g,"").split(",").map(n=>n-0);
+        	//lis.pop();
+        	console.log(lis);
+        	return lis.map((v,i)=>{
+        		let pref="";
+        		if(v!==0){
+        			pref=numberToSitPona(v)+ " ";
+        		}
+        		if(i<lis.length-1){
+        			return pref + "ali";
+        		}else{
+        			return pref;
+        		}
+        	}).join(" ").trim();
+        }
         
         function numberToSitPona(n){
         	var nums=Object.keys(numberLookup).map(v=>v-0).sort((a,b)=>b-a);
@@ -629,7 +650,7 @@
         		}
         		if(n<=0)break;
         	}
-        	return list.join("&#8203;");
+        	return list.join(" ");
         	
         }
 
