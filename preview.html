@@ -956,8 +956,12 @@
             	document.querySelectorAll(".verse.highlighted")
             		    .forEach(d=>d.classList.remove("highlighted"));
             	var verse=e.parentNode.id.split("-")[1]-0;
-            	document.querySelector("#verse-" + verse).classList.add("highlighted");
-            	currentState.verse=verse;
+            	if(verse !== currentState.verse){
+            		document.querySelector("#verse-" + verse).classList.add("highlighted");
+            		currentState.verse=verse;
+            	}else{
+            		currentState.verse=null;
+            	}
             	showToast("URL updated");
             	updateURL();
             });
@@ -966,8 +970,12 @@
             	document.querySelectorAll(".verse.highlighted")
             		    .forEach(d=>d.classList.remove("highlighted"));
             	var verse=e.parentNode.id.split("-")[1]-0;
-            	document.querySelector("#verse-" + verse).classList.add("highlighted");
-            	currentState.verse=verse;
+            	if(verse !== currentState.verse){
+            		document.querySelector("#verse-" + verse).classList.add("highlighted");
+            		currentState.verse=verse;
+            	}else{
+            		currentState.verse=null;
+            	}
             	showToast("URL updated");
             	updateURL();
             });
