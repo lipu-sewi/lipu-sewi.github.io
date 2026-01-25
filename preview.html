@@ -1008,6 +1008,10 @@
             		currentState.verse=verse;
             	}else{
             		currentState.verse=null;
+            		if(currentState.isolated){
+            			currentState.isolated=false;
+            			removeIsolated();
+            		}
             	}
             	showToast("URL updated");
             	updateURL();
