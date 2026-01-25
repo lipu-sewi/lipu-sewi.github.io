@@ -101,6 +101,16 @@
             color: #2c3e50;
         }
         
+        .sitelen-pona-mode .st-problem{
+        	color:red;
+            font-size: 14px;
+  			font-family: monospace;
+        	
+        }
+        .latina-pona-mode .st-problem{
+        	display:none;
+        }
+        
         .latina-pona-mode .verse {
             margin-bottom: 15px;
             padding: 10px;
@@ -959,6 +969,8 @@
         // Format verse content with proper name handling
         function formatVerseContent(text) {
         
+        	var problem=false;
+        
             // Handle names (words starting with &) by wrapping them in a span with class "name-rect"
             text=text.replace(/&/g,"~");
             text=text.replace(/([^~A-Za-z])([A-Z])/g,"$1~$2");
@@ -968,110 +980,166 @@
             //this just adds a span
             text= text.replace(/@/g,"^^");
             
-            text= text.replace(/([.;!:])/g,(a,p,s)=>('$' + p +'@'));
+            text= text.replace(/([.;!:?])/g,(a,p,s)=>('$' + p +'@'));
             text= text.replace(/[\^][\^]/g,"&#64;");
             var textList=text.split("@");
             var nstart=0;
-            var splitLaMin=8;
+            var splitLaMin=5;
+            var minSplitWNum=3;
             var splitLaTot=15;
             
             text=textList.map(l=>{
             		var words=l.split(" ");
-            		var last00=[];
-            		var last01=[];
-            		var last02=[];
-            		var last03=[];
-            		var last04=[];
-            		var wnum=nstart;
+            		var pnstart=nstart;
             		var pref="";
             		
-            		if(nstart>0){
-            			pref='<span class="space">' + rep(pad,wnum," ") + '</span>';
+            		
+            		
+            		
+            		if(pnstart>0){
+            			pref='<span class="space">' + rep(pad,pnstart," ") + '</span>';
             		}
             		
-            		l=words.map((w,i)=>{
-            		    var aw=w.replace(/[,.;$]/g,"").trim();
-            		    if(aw==="lili" || aw ==="la"){
-            		    	w='<span class="wide2">' + w + '</span>';
-            		    }
-            		    if(aw==="o" || aw==="kin"){
-            		    	w='<span class="wide1">' + w + '</span>';
-            		    }
-            		    if(w.indexOf("~")===0){
-            		    	let sp=convertNameToSitelenPona(w.replace("~",""));
-            		    	console.log(sp);
-            		    	let w2=sp.words;
-            		    	wnum+=w2.split(" ").length;
-            		    }
-            		    if(aw.match("^[0-9][0-9]*$")){
-            		    	let w2=numberToNasinNanpaPona(aw-0);
-            		    	wnum+=w2.split(" ").length;
-            		    	w=w.replace(aw,w2);
-            		    }
-            		    if(aw==="o"){
-            				if(last00.length>0){
-            					wnum=last00.at(-1);
-            					w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> ' + w; 	
-            				}            				
-            				last00.push(wnum);
-            				last01=[];
-            				last02=[];
-            				last03=[];
-            				last04=[];
-            			}else if(aw==="li"){
-            				if(last01.length>0){
-            					wnum=last01.at(-1);
-            					w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> ' + w; 	
+            		var redoList=[];
+            		var redo=true;
+            		while(redo){
+            			var last00=[];
+            			var last01=[];
+            			var last02=[];
+            			var last03=[];
+            			var last04=[];
+            			var wnum=pnstart;
+            		    redo=false;
+            			var blist=[];
+            			l=words.map((w,i)=>{
+            		    	var aw=w.replace(/[,.;?$]/g,"").trim();
+            		    	var forceLine=false;
+            		    	if(redoList.findIndex(r=>r.num===i)>=0){
+            		    		wnum=1;
+            		    		forceLine=true;
+            		    	}
+            		    	
+            		    	if(w.indexOf("~")===0){
+            		    		let sp=convertNameToSitelenPona(w.replace("~",""));
+            		    		console.log(sp);
+            		    		let w2=sp.words;
+            		    		wnum+=w2.split(" ").length;
+            		    	}
+            		    	if(aw.match("^[0-9][0-9]*$")){
+            		    		let w2=numberToNasinNanpaPona(aw-0);
+            		    		wnum+=w2.split(" ").length;
+            		    		w=w.replace(aw,w2);
+            		    	}
+            		    	if(aw==="o"){
+            		    		if(forceLine){
+            		    			last00.push(wnum);
+            		    		}
+            					if(last00.length>0){
+            						wnum=last00.at(-1);
+            						w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> ' + w; 	
+            					}else if(wnum>minSplitWNum){
+            						blist.push({"word":aw,"num":i});
+            					}            				
+            					last00.push(wnum);
+            					last01=[];
+            					last02=[];
+            					last03=[];
+            					last04=[];
+            				}else if(aw==="li"){
+            					if(forceLine){
+            		    			last01.push(wnum);
+            		    		}
+            					if(last01.length>0){
+            						wnum=last01.at(-1);
+            						w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> ' + w; 	
+            					}else if(wnum>minSplitWNum){
+            							blist.push({"word":aw,"num":i});
+            					}            				           				
+            					last01.push(wnum);
+            					last02=[];
+            					last03=[];
+            					last04=[];
+            				}else if(aw==="e"){
+            					if(forceLine){
+            		    			last02.push(wnum);
+            		    		}
+            					if(last02.length>0){
+            						wnum=last02.at(-1);
+            						w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> '+w; 	
+            					}else if(wnum>minSplitWNum){
+            							blist.push({"word":aw,"num":i});
+            					}            				           				
+            					last02.push(wnum);
+            					last03=[];
+            					last04=[];
+            				}else if(aw==="tawa" || aw === "kepeken" || aw === "tan" || aw === "tan" || aw === "sama" || aw === "lon"){
+            					if(forceLine){
+            		    			last03.push(wnum);
+            		    		}
+            					if(last03.length>0){
+            						wnum=last03.at(-1);
+            						w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> '+w; 	
+            					}else if(wnum>minSplitWNum){
+            							blist.push({"word":aw,"num":i});
+            					}            				          				
+            					last03.push(wnum);
+            					last04=[];
+            				}else if((aw==="la") && wnum>splitLaMin && ((words.length-i)+wnum)>splitLaTot){
+            					wnum=1;
+            					w=w+'*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span>';
+            					
+            					last00=[];
+            					last01=[];
+            					last02=[];
+            					last03=[];
+            					last04=[];
+            				}else if((aw==="en")){
+            					if(forceLine){
+            		    			last04.push(wnum);
+            		    		}
+            					if(last04.length>0){
+            						wnum=last04.at(-1);
+            						w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> '+w; 	
+            					}else if(wnum>minSplitWNum){
+            							blist.push({"word":aw,"num":i});
+            					}            				           				
+            					last04.push(wnum);
             				}
-            				last01.push(wnum);
-            				last02=[];
-            				last03=[];
-            				last04=[];
-            			}else if(aw==="e"){
-            				if(last02.length>0){
-            					wnum=last02.at(-1);
-            					w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> '+w; 	
-            				}
-            				last02.push(wnum);
-            				last03=[];
-            				last04=[];
-            			}else if(aw==="tawa"){
-            				if(last03.length>0){
-            					wnum=last03.at(-1);
-            					w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> '+w; 	
-            				}
-            				last03.push(wnum);
-            				last04=[];
-            			}else if((aw==="la") && wnum>splitLaMin && ((words.length-i)+wnum)>splitLaTot){
-            				wnum=1;
-            				w=w+'*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span>';
+            				if(wnum>splitLaTot){
+            					redo=true;
+            				}     
             				
-            				last00=[];
-            				last01=[];
-            				last02=[];
-            				last03=[];
-            				last04=[];
-            			}else if((aw==="en")){
-            				if(last04.length>0){
-            					wnum=last04.at(-1);
-            					w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> '+w; 	
+            				if(w.length>0){
+            					wnum++;
             				}
-            				last04.push(wnum);
+            				
+            				       			
+            				return w;
+            			}).join("<span class='st-space'>&#8203;</span><span class='lt-space'> </span>");
+            			l=l.replace(/\*/g,'<span class="newline2">');
+            			l=l.replace(/\$/g,'<span class="newline">');
+            			l=l.replace(/\@/g,'</span>');
+            			if(l.at(-1)===":"){
+            		   		nstart=1;
+            		   		console.log("Colon");
+            			}else{
+            		   		nstart=0;
             			}
-            			
-            			
-            			if(w.length>0){
-            				wnum++;
+            			if(redo){
+            				var found=false;
+            				for(var j=0;j<blist.length;j++){
+            					if(redoList.findIndex(ww=>ww.num===blist[j].num)<0){
+            						redoList.push(blist[j]);
+            						found=true;
+            						break;
+            					}
+            				}
+            				if(!found){
+            					redo=false;
+            					showToast("Wrapping problem");
+            					problem=true;
+            				}
             			}
-            			return w;
-            		}).join("<span class='st-space'>&#8203;</span><span class='lt-space'> </span>");
-            		l=l.replace(/\*/g,'<span class="newline2">');
-            		l=l.replace(/\$/g,'<span class="newline">');
-            		l=l.replace(/\@/g,'</span>');
-            		if(l.at(-1)===":"){
-            		   nstart=1;
-            		}else{
-            		   nstart=0;
             		}
             		
             		return pref+l;
@@ -1084,9 +1152,13 @@
             text= text.replace(/[ ][ ]*/g," ");
             
             
-            return text.replace(/~(\w+)/g, (a,p,s)=>
+            var ret= text.replace(/~(\w+)/g, (a,p,s)=>
                 '<span class="name-tp">' + convertNameToTokiPona(p) + '</span>' + 
                 '<span class="name-rect">[' + convertNameToSitelenPona(p,true).html + ']</span>');
+            if(problem){
+            	ret=ret+"<div class='st-problem'>Warning: wrapping issue</div>";
+            }
+            return ret;
         }
 
         // Apply sitelen pona font to verse content
