@@ -701,7 +701,8 @@
 			var pverse=currentState.verse[0];
 			var bld=pverse;
 			var nxt="";
-			currentState.verse.forEach(v=>{
+			currentState.verse.forEach((v,i)=>{
+				if(i===0)return;
 				if(v===pverse||v===pverse+1){
 					nxt="-" + v;
 					pverse=v;
@@ -940,6 +941,15 @@
             }
         }
         
+        function updateChapterTitle(){
+        	const bookName = bibleBooks[currentState.testament][currentState.book].name;
+        	let vshort="";
+            if(currentState.verse.length>0){
+            	vshort=":" + verseShortHand();
+            }
+            let html = `${bookName} ${currentState.chapter}${vshort}`;
+            document.querySelector(".chapter-title").innerHTML=html;
+        }
 
         // Display the chapter content
         function displayChapter(text, expectedVerses) {
@@ -947,10 +957,13 @@
             const bookName = bibleBooks[currentState.testament][currentState.book].name;
             
             sitelenNames={};
-            
+            let vshort="";
+            if(currentState.verse.length>0){
+            	vshort=":" + verseShortHand();
+            }
             let html = `
                 <div class="chapter-header">
-                    <h2 class="chapter-title">${bookName} ${currentState.chapter}</h2>
+                    <h2 class="chapter-title">${bookName} ${currentState.chapter}${vshort}</h2>
                 </div>
             `;
             
@@ -1039,6 +1052,7 @@
             	});
             	showToast("URL updated");
             	updateURL();
+            	updateChapterTitle();
             	
             };
             document.querySelectorAll(".verse-number-st").forEach(e=>e.onclick=()=>{
