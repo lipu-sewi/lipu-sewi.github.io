@@ -520,6 +520,31 @@
     <div id="toast" class="toast">Link copied to clipboard!</div>
 
     <script>
+    
+    	const global={
+    		fontSize:24,
+    		charsPerLine:16,
+    		minSplitWNum:3,
+    		splitLaMin:5,    		
+    	};
+    	
+    	function updateViewing(){
+    		
+    	
+    		const elements = document.querySelectorAll('.sitelen-pona-mode .verse-content');
+			
+			elements.forEach(el => {
+    			el.style.fontSize = global.fontSize + 'px';
+    			el.style.width = global.fontSize*global.charsPerLine + 'px';
+			});
+			const elements2 = document.querySelectorAll('.sitelen-pona-mode .verse-number-st .sitelen');
+			elements.forEach(el => {
+    			el.style.fontSize = global.fontSize + 'px';
+			});
+			
+			loadChapter();
+    	}
+    
         // Bible metadata - books and number of chapters
         const bibleBooks = {
             "old_testament": {
@@ -636,7 +661,7 @@
             testament: 'old_testament',
             book: 'genesis',
             chapter: 1,
-            verse: null,
+            verse: [],
             sitelen: false,
             isolated: false,
             embed: false
@@ -1125,7 +1150,7 @@
             text=text.replace(/&/g,"~");
             text=text.replace(/([^~A-Za-z])([A-Z])/g,"$1~$2");
             text=text.replace(/\.\ (\ )*/g,". ");
-            var pad="la";
+            var pad="zz";
             //if sitelen, need to figure out spaces
             //this just adds a span
             text= text.replace(/@/g,"^^");
@@ -1134,9 +1159,9 @@
             text= text.replace(/[\^][\^]/g,"&#64;");
             var textList=text.split("@");
             var nstart=0;
-            var splitLaMin=5;
-            var minSplitWNum=3;
-            var splitLaTot=15;
+            var splitLaMin=global.splitLaMin;
+            var minSplitWNum=global.minSplitWNum;
+            var splitLaTot=global.charsPerLine-1;
             
             text=textList.map(l=>{
             		var words=l.split(" ");
