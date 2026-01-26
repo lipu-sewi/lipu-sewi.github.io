@@ -1125,7 +1125,7 @@
             text=text.replace(/&/g,"~");
             text=text.replace(/([^~A-Za-z])([A-Z])/g,"$1~$2");
             text=text.replace(/\.\ (\ )*/g,". ");
-            var pad="la";
+            var pad="zz";
             //if sitelen, need to figure out spaces
             //this just adds a span
             text= text.replace(/@/g,"^^");
@@ -1265,7 +1265,9 @@
             				
             				       			
             				return w;
-            			}).join("<span class='st-space'> </span><span class='lt-space'> </span>");
+            			}).join("%<span class='lt-space'> </span>");
+            			l=l.replace(/\@\%/g,'@').replace(/^\%/g,"");
+            			l=l.replace(/\%/g,"<span class='st-space'> </span>");            			
             			l=l.replace(/\*/g,'<span class="newline2">');
             			l=l.replace(/\$/g,'<span class="newline">');
             			l=l.replace(/\@/g,'</span>');
