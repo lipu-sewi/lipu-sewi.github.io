@@ -7,447 +7,91 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <style>
         /* === load nasin-nanpa === */
-        @font-face{
+        @font-face {
             font-family: "NasinNanpa";
-            src:
-                url("font/nasin-nanpa-4.0.2.woff2") format("woff2");
+            src: url("font/nasin-nanpa-4.0.2.woff2") format("woff2");
             font-display: swap;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
             font-family: system-ui, Segoe UI, Roboto, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f5f5f5;
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
+            line-height: 1.6; color: #333; background-color: #f5f5f5;
+            padding: 20px; max-width: 1200px; margin: 0 auto;
         }
         
-        header {
-            text-align: center;
-            margin-bottom: 30px;
+        header, .controls, .chapter-container, .missing-verses, .debug-info {
+            border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: white; padding: 20px; margin-bottom: 20px;
         }
+
+        header { text-align: center; }
+        .embed .full-view { display: none; }
         
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-        
-        .embed .full-view{
-        	display:none;
-        }
-        
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 20px;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+        .controls { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
         
         select, button {
-            padding: 10px 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-            background-color: white;
+            padding: 10px 15px; border: 1px solid #ddd; border-radius: 4px;
+            font-size: 16px; background-color: white; cursor: pointer;
         }
         
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+        button { background-color: #3498db; color: white; border: none; transition: 0.3s; }
+        button:hover { background-color: #2980b9; }
         
-        button:hover {
-            background-color: #2980b9;
-        }
-        
-        .display-options {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .chapter-container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
+        .display-options { display: flex; align-items: center; gap: 10px; }
         
         .chapter-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee;
         }
         
-        .chapter-title {
-            font-size: 24px;
-            color: #2c3e50;
-        }
-        
-        .sitelen-pona-mode .st-problem{
-        	color:red;
-            font-size: 14px;
-  			font-family: monospace;
-        	
-        }
-        .latina-pona-mode .st-problem{
-        	display:none;
-        }
-        
-        .latina-pona-mode .verse {
-            margin-bottom: 15px;
-            padding: 10px;
-            border-radius: 4px;
-            transition: background-color 0.2s;
-        }
-        .sitelen-pona-mode .verse {
-            margin-bottom: 0px;
-            padding: 0px;
-            border-radius: 4px;
-            transition: background-color 0.2s;
-        }
-        
-        .verse:hover {
-            background-color: #f9f9f9;
-        }
-        
-        .verse.highlighted {
-            background-color: #fff8e1;
-            border: 2px solid #ffd54f;
-        }
-        
-        .verse-number-lt {
-  			font-weight: bold;
-  			margin-right: 5px;
-  			color: #7f8c8d;
-  			vertical-align: top;
-  			width: 20px;
-  			display: inline-block;
-  			margin-left: 5px;
-  			cursor:pointer;
-		}
-		.verse-number-st {
-  			font-weight: bold;
-  			color: #7f8c8d;
-  			vertical-align: top;
-  			width: 20px;
-  			display: inline-block;
-  			margin-top:5px;
-  			cursor:pointer;
-		}
-		
-		
-		.linja{
-			width: 13px;
-  		}
-  		.linja-sub{
-  			position: relative;
-  			top: 18px;
-  			left: -25px;
-  			font-family: monospace;
-  			font-weight: bolder;
-  			font-size: 12px;
-  			width: 20px;
-  			display: inline;
-  		}
-  		.linja-sub-sub{
-  			position: absolute;
-  			display: block;
-  			width: 24px;
-  			top: 1px;
-  			margin: auto;
-  			text-align: center;
-  			left: 1px;
-  		}
-  		.linja-sub-sub span{
-  			display: inline-block;
-  		}
-		
-		.sitelen-pona-mode .verse-number-lt {
-		    display:none;
-		}
-		.sitelen-pona-mode .verse-number-st {
-		    width: 75px;
-		    display:inline-block;
-		}
-        
-        .verse-content {
-            display: inline;
-        }
-        
-        
-        .unsolidified {
-            opacity: 0.7;
-            border-left: 3px solid #e74c3c;
-            padding-left: 10px;
-        }
-        
-        .solidified {
-            border-left: 3px solid #2ecc71;
-            padding-left: 10px;
-        }
-        
-        .missing-verses {
-            background-color: #fff3e0;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            border-left: 4px solid #ff9800;
-        }
-        .latina-pona-mode .verse-number-st{
-            display:none;
-        }
-        .sitelen-pona-mode .verse-number-lt{
-            display:none;
-        }
-        
-        .sitelen-pona-mode .verse-number-st .sitelen{
-        	font-family: "NasinNanpa", system-ui, serif;
-            font-size: 24px;
-            line-height: 0.4;
-            white-space: pre-wrap;
-            /* enable ligatures / contextual features used by nasin nanpa font */
-            font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
-            font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
-            -webkit-font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
-            display:inline-block;
-        }
-        
-        .sitelen-pona-mode .verse-content {
-            font-family: "NasinNanpa", system-ui, serif;
-            font-size: 24px;
-            line-height: 0.5;
-            white-space: pre-wrap;
-            /* enable ligatures / contextual features used by nasin nanpa fonts */
-            font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
-            font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
-            -webkit-font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
-            display:inline-block;
-            margin-top:10px;
-            width:384px;
-        }
-        
-        .space{
-        	display:none;
-        }
-        .newline2{
-        	display:none;
-        }
-        
-        .isolated .verse{
-        	display:none;
-        }
-        
-        .isolated .verse.highlighted{
-        	display:block;
-        }
-        
-        .sitelen-pona-mode .space{
-        	display:inline;
-        	opacity:0%;
-        	
-        }
-        .latina-pona-mode .st-space{
-        	display:none;
-        }
-        .sitelen-pona-mode .lt-space{
-        	display:none;
-        }
-        .fudge .sitelen-pona-mode .lt-space{
-        	display:inline;
-        }
-        .fudge .sitelen-pona-mode .nudgeUp2{
-        	position: relative;
-  			top: -2px;
-        }
-        .fudge .sitelen-pona-mode .wide4{
-        	margin-left:4px;
-        	margin-right:4px;
-        	
-        } 
-        .fudge .sitelen-pona-mode .wide2{
-        	margin-left:2px;
-        	margin-right:2px;
-        	
-        }
-        .fudge .sitelen-pona-mode .wide1{
-        	margin-left:2px;
-        	margin-right:1px;        	
-        }
-                
-        .sitelen-pona-mode .newline{
-        	display:block;
-        	opacity:0%;
-        	height:22px;
-        }
-        .sitelen-pona-mode .newline2{
-        	display:block;
-        	opacity:0%;
-        	height:22px;
-        }
-        .sitelen-pona-mode .punct{
-        	display:none;
-        }
-        
-        .fudge .sitelen-pona-mode .name-rect {
-            display: inline-block;
-            border: 2px solid #333;
-            border-radius: 6px;
-            padding: 4px 6px;
-            margin: 0 4px;
-        }
-        
-        .man .sitelen-pona-mode .name-rect {
-            display: inline-block;
-  			border: 3px solid #333;
-  			border-radius: 6px;
-  			padding: 8px 6px;
-  			margin: 0 4px;
-        }
-        
-        
+        .chapter-title { font-size: 24px; color: #2c3e50; }
 
-        .sitelen-pona-mode .name-tp {
-            display: none;
-        }
-        .latina-pona-mode .name-rect {
-            display: none;
-        }
+        /* Modes */
+        .sitelen-pona-mode .st-problem { color: red; font-size: 14px; font-family: monospace; }
+        .latina-pona-mode .st-problem { display: none; }
         
-        .loading {
-            text-align: center;
-            padding: 40px;
-            font-size: 18px;
-            color: #7f8c8d;
-        }
+        .verse { border-radius: 4px; transition: 0.2s; padding: 10px; }
+        .sitelen-pona-mode .verse { padding: 0; margin-bottom: 0; }
+        .verse:hover { background-color: #f9f9f9; }
+        .verse.highlighted { background-color: #fff8e1; border: 2px solid #ffd54f; }
         
-        .error {
-            background-color: #ffebee;
-            color: #c62828;
-            padding: 15px;
-            border-radius: 4px;
-            margin: 20px 0;
-            border-left: 4px solid #c62828;
+        .verse-number-lt, .verse-number-st {
+            font-weight: bold; color: #7f8c8d; vertical-align: top;
+            width: 20px; display: inline-block; cursor: pointer;
         }
-        
-        .debug-info {
-            background-color: #e3f2fd;
-            padding: 15px;
-            border-radius: 4px;
-            margin: 20px 0;
-            border-left: 4px solid #2196f3;
-            font-family: monospace;
-            font-size: 14px;
-            overflow-x: auto;
-            display: none;
+
+        .sitelen-pona-mode .verse-number-lt, .latina-pona-mode .verse-number-st { display: none; }
+        .sitelen-pona-mode .verse-number-st { width: 75px; display: inline-block; margin-top: 5px; }
+
+        .sitelen-pona-mode .verse-number-st .sitelen, .sitelen-pona-mode .verse-content {
+            font-family: "NasinNanpa", serif; font-size: 24px; line-height: 0.5;
+            white-space: pre-wrap; font-variant-ligatures: common-ligatures contextual;
         }
+
+        .sitelen-pona-mode .verse-content { display: inline-block; margin-top: 10px; width: 384px; }
         
-        .font-status {
-            margin-top: 8px;
-            color: #7f8c8d;
-            font-size: 0.9rem;
-        }
+        .unsolidified { opacity: 0.7; border-left: 3px solid #e74c3c; }
+        .solidified { border-left: 3px solid #2ecc71; }
         
-        .reload-btn {
-            margin-left: 8px;
-            padding: 6px 10px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            background: #f0f0f0;
-            color: #333;
-            cursor: pointer;
-        }
-        
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #7f8c8d;
-            font-size: 14px;
-        }
-        
-        .share-section {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-            gap: 10px;
-        }
-        
-        .share-btn {
-            background-color: #2ecc71;
-        }
-        
-        .share-btn:hover {
-            background-color: #27ae60;
-        }
-        
-        .debug-toggle {
-            display: flex;
-            align-items: center;
-            margin-top: 20px;
-            gap: 10px;
-        }
-        
-        @media (max-width: 768px) {
-            .controls {
-                flex-direction: column;
-            }
-            
-            select, button {
-                width: 100%;
-            }
-        }
-        
+        .space, .newline, .newline2 { display: none; }
+        .sitelen-pona-mode .space { display: inline; opacity: 0; }
+        .sitelen-pona-mode .newline, .sitelen-pona-mode .newline2 { display: block; height: 22px; opacity: 0; }
+        .sitelen-pona-mode .punct { display: none; }
+
+        .name-rect { display: inline-block; border: 2px solid #333; border-radius: 6px; padding: 4px 6px; margin: 0 4px; }
+        .latina-pona-mode .name-rect, .sitelen-pona-mode .name-tp { display: none; }
+
+        .nav-controls { display: flex; gap: 10px; justify-content: center; margin-top: 10px; width: 100%; }
+        .nav-controls button { background-color: #2c3e50; flex: 1; max-width: 200px; }
+
         .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #333;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 4px;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s;
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #333; color: white; padding: 10px 20px; border-radius: 4px;
+            opacity: 0; transition: 0.3s; z-index: 1000;
         }
-        
-        .toast.show {
-            opacity: 1;
-        }
-        
-        .nav-controls {
-    		display: flex;
-    		gap: 10px;
-    		justify-content: center;
-    		margin-top: 10px;
-    		width: 100%;
-		}
-		
-		.nav-controls button {
-    		background-color: #2c3e50; /* Darker color for navigation */
-    		flex: 1;
-    		max-width: 200px;
-		}
+        .toast.show { opacity: 1; }
     </style>
 </head>
 <body class="embed">
@@ -461,178 +105,85 @@
             <option value="old_testament">Old Testament</option>
             <option value="new_testament">New Testament</option>
         </select>
-        
-        <select id="book-select">
-            <!-- Books will be populated by JavaScript -->
-        </select>
-        
-        <select id="chapter-select">
-            <!-- Chapters will be populated by JavaScript -->
-        </select>
-        
+        <select id="book-select"></select>
+        <select id="chapter-select"></select>
         <button id="load-button">Load Chapter</button>
         
         <div class="display-options">
-            <input type="checkbox" id="sitelen-pona-toggle">
-            <label for="sitelen-pona-toggle">Show sitelen pona</label>
-            <input type="checkbox" id="isolated-toggle">
-            <label for="isolated-toggle">Show selected verses only</label>
+            <label><input type="checkbox" id="sitelen-pona-toggle"> Show sitelen pona</label>
+            <label><input type="checkbox" id="isolated-toggle"> Selected only</label>
         </div>
     </div>
     
     <div class="nav-controls full-view">
-    	<button id="prev-chapter">← Previous Chapter</button>
-    	<button id="next-chapter">Next Chapter→</button>
+    	<button id="prev-chapter">← Previous</button>
+    	<button id="next-chapter">Next →</button>
 	</div>
     
     <div id="missing-verses-container"></div>
-    
     <div id="chapter-display" class="latina-pona-mode">
         <div class="loading">Select a book and chapter to begin</div>
     </div>
 
-    <div class="share-section full-view">
-        <button id="share-button" class="share-btn">Copy Link to Share</button>
+    <div class="share-section full-view" style="text-align: center; margin: 20px;">
+        <button id="share-button" style="background-color: #2ecc71;">Copy Link to Share</button>
     </div>
 
-    <div class="font-status full-view">
+    <div class="font-status full-view" style="text-align:center; color:#777;">
         Font status: <span id="statusText">checking…</span>
-        <button id="reload" class="reload-btn" title="Try re-loading the font">Reload Font</button>
+        <button id="reload" style="padding:2px 10px; font-size:12px; color:#333;">Reload Font</button>
     </div>
 
-    <div class="debug-toggle full-view">
-        <input type="checkbox" id="debug-toggle">
-        <label for="debug-toggle">Show Debug Information</label>
-    </div>
-
-    <div id="debug-container" class="debug-info full-view">
-        <h3>Debug Information</h3>
-        <div id="debug-info"></div>
-    </div>
-    
-    <footer class="full-view">
-        <p>Source code: <a href="https://github.com/lipu-sewi/lipu-sewi.github.io" target="_blank">GitHub Repository</a></p>
-        <p>Text from <a href="https://github.com/PaulieGlot/lipu-sewi" target="_blank">lipu sewi GitHub repository</a></p>
-        <p>Verse count data from <a href="https://bolls.life/api/" target="_blank">Bolls Bible API</a></p>
-        <p>Note: Some chapters may not be available yet</p>
-    </footer>
-
-    <div id="toast" class="toast">Link copied to clipboard!</div>
+    <div id="toast" class="toast">Link copied!</div>
 
     <script>
-        // Bible metadata - books and number of chapters
-        const bibleBooks = {
+        // --- DATA & CONSTANTS ---
+        const BIBLE_BOOKS = {
             "old_testament": {
-                "genesis": { chapters: 50, name: "Genesis", id: 1 },
-                "exodus": { chapters: 40, name: "Exodus", id: 2 },
-                "leviticus": { chapters: 27, name: "Leviticus", id: 3 },
-                "numbers": { chapters: 36, name: "Numbers", id: 4 },
-                "deuteronomy": { chapters: 34, name: "Deuteronomy", id: 5 },
-                "joshua": { chapters: 24, name: "Joshua", id: 6 },
-                "judges": { chapters: 21, name: "Judges", id: 7 },
-                "ruth": { chapters: 4, name: "Ruth", id: 8 },
-                "1_samuel": { chapters: 31, name: "1 Samuel", id: 9 },
-                "2_samuel": { chapters: 24, name: "2 Samuel", id: 10 },
-                "1_kings": { chapters: 22, name: "1 Kings", id: 11 },
-                "2_kings": { chapters: 25, name: "2 Kings", id: 12 },
-                "1_chronicles": { chapters: 29, name: "1 Chronicles", id: 13 },
-                "2_chronicles": { chapters: 36, name: "2 Chronicles", id: 14 },
-                "ezra": { chapters: 10, name: "Ezra", id: 15 },
-                "nehemiah": { chapters: 13, name: "Nehemiah", id: 16 },
-                "esther": { chapters: 10, name: "Esther", id: 17 },
-                "job": { chapters: 42, name: "Job", id: 18 },
-                "psalms": { chapters: 150, name: "Psalms", id: 19 },
-                "proverbs": { chapters: 31, name: "Proverbs", id: 20 },
-                "ecclesiastes": { chapters: 12, name: "Ecclesiastes", id: 21 },
-                "song_of_songs": { chapters: 8, name: "Song of Solomon", id: 22 },
-                "isaiah": { chapters: 66, name: "Isaiah", id: 23 },
-                "jeremiah": { chapters: 52, name: "Jeremiah", id: 24 },
-                "lamentations": { chapters: 5, name: "Lamentations", id: 25 },
-                "ezekiel": { chapters: 48, name: "Ezekiel", id: 26 },
-                "daniel": { chapters: 12, name: "Daniel", id: 27 },
-                "hosea": { chapters: 14, name: "Hosea", id: 28 },
-                "joel": { chapters: 3, name: "Joel", id: 29 },
-                "amos": { chapters: 9, name: "Amos", id: 30 },
-                "obadiah": { chapters: 1, name: "Obadiah", id: 31 },
-                "jonah": { chapters: 4, name: "Jonah", id: 32 },
-                "micah": { chapters: 7, name: "Micah", id: 33 },
-                "nahum": { chapters: 3, name: "Nahum", id: 34 },
-                "habakkuk": { chapters: 3, name: "Habakkuk", id: 35 },
-                "zephaniah": { chapters: 3, name: "Zephaniah", id: 36 },
-                "haggai": { chapters: 2, name: "Haggai", id: 37 },
-                "zechariah": { chapters: 14, name: "Zechariah", id: 38 },
+                "genesis": { chapters: 50, name: "Genesis", id: 1 }, "exodus": { chapters: 40, name: "Exodus", id: 2 },
+                "leviticus": { chapters: 27, name: "Leviticus", id: 3 }, "numbers": { chapters: 36, name: "Numbers", id: 4 },
+                "deuteronomy": { chapters: 34, name: "Deuteronomy", id: 5 }, "joshua": { chapters: 24, name: "Joshua", id: 6 },
+                "judges": { chapters: 21, name: "Judges", id: 7 }, "ruth": { chapters: 4, name: "Ruth", id: 8 },
+                "1_samuel": { chapters: 31, name: "1 Samuel", id: 9 }, "2_samuel": { chapters: 24, name: "2 Samuel", id: 10 },
+                "1_kings": { chapters: 22, name: "1 Kings", id: 11 }, "2_kings": { chapters: 25, name: "2 Kings", id: 12 },
+                "1_chronicles": { chapters: 29, name: "1 Chronicles", id: 13 }, "2_chronicles": { chapters: 36, name: "2 Chronicles", id: 14 },
+                "ezra": { chapters: 10, name: "Ezra", id: 15 }, "nehemiah": { chapters: 13, name: "Nehemiah", id: 16 },
+                "esther": { chapters: 10, name: "Esther", id: 17 }, "job": { chapters: 42, name: "Job", id: 18 },
+                "psalms": { chapters: 150, name: "Psalms", id: 19 }, "proverbs": { chapters: 31, name: "Proverbs", id: 20 },
+                "ecclesiastes": { chapters: 12, name: "Ecclesiastes", id: 21 }, "song_of_songs": { chapters: 8, name: "Song of Solomon", id: 22 },
+                "isaiah": { chapters: 66, name: "Isaiah", id: 23 }, "jeremiah": { chapters: 52, name: "Jeremiah", id: 24 },
+                "lamentations": { chapters: 5, name: "Lamentations", id: 25 }, "ezekiel": { chapters: 48, name: "Ezekiel", id: 26 },
+                "daniel": { chapters: 12, name: "Daniel", id: 27 }, "hosea": { chapters: 14, name: "Hosea", id: 28 },
+                "joel": { chapters: 3, name: "Joel", id: 29 }, "amos": { chapters: 9, name: "Amos", id: 30 },
+                "obadiah": { chapters: 1, name: "Obadiah", id: 31 }, "jonah": { chapters: 4, name: "Jonah", id: 32 },
+                "micah": { chapters: 7, name: "Micah", id: 33 }, "nahum": { chapters: 3, name: "Nahum", id: 34 },
+                "habakkuk": { chapters: 3, name: "Habakkuk", id: 35 }, "zephaniah": { chapters: 3, name: "Zephaniah", id: 36 },
+                "haggai": { chapters: 2, name: "Haggai", id: 37 }, "zechariah": { chapters: 14, name: "Zechariah", id: 38 },
                 "malachi": { chapters: 4, name: "Malachi", id: 39 }
             },
             "new_testament": {
-                "matthew": { chapters: 28, name: "Matthew", id: 40 },
-                "mark": { chapters: 16, name: "Mark", id: 41 },
-                "luke": { chapters: 24, name: "Luke", id: 42 },
-                "john": { chapters: 21, name: "John", id: 43 },
-                "acts": { chapters: 28, name: "Acts", id: 44 },
-                "romans": { chapters: 16, name: "Romans", id: 45 },
-                "1_corinthians": { chapters: 16, name: "1 Corinthians", id: 46 },
-                "2_corinthians": { chapters: 13, name: "2 Corinthians", id: 47 },
-                "galatians": { chapters: 6, name: "Galatians", id: 48 },
-                "ephesians": { chapters: 6, name: "Ephesians", id: 49 },
-                "philippians": { chapters: 4, name: "Philippians", id: 50 },
-                "colossians": { chapters: 4, name: "Colossians", id: 51 },
-                "1_thessalonians": { chapters: 5, name: "1 Thessalonians", id: 52 },
-                "2_thessalonians": { chapters: 3, name: "2 Thessalonians", id: 53 },
-                "1_timothy": { chapters: 6, name: "1 Timothy", id: 54 },
-                "2_timothy": { chapters: 4, name: "2 Timothy", id: 55 },
-                "titus": { chapters: 3, name: "Titus", id: 56 },
-                "philemon": { chapters: 1, name: "Philemon", id: 57 },
-                "hebrews": { chapters: 13, name: "Hebrews", id: 58 },
-                "james": { chapters: 5, name: "James", id: 59 },
-                "1_peter": { chapters: 5, name: "1 Peter", id: 60 },
-                "2_peter": { chapters: 3, name: "2 Peter", id: 61 },
-                "1_john": { chapters: 5, name: "1 John", id: 62 },
-                "2_john": { chapters: 1, name: "2 John", id: 63 },
-                "3_john": { chapters: 1, name: "3 John", id: 64 },
-                "jude": { chapters: 1, name: "Jude", id: 65 },
+                "matthew": { chapters: 28, name: "Matthew", id: 40 }, "mark": { chapters: 16, name: "Mark", id: 41 },
+                "luke": { chapters: 24, name: "Luke", id: 42 }, "john": { chapters: 21, name: "John", id: 43 },
+                "acts": { chapters: 28, name: "Acts", id: 44 }, "romans": { chapters: 16, name: "Romans", id: 45 },
+                "1_corinthians": { chapters: 16, name: "1 Corinthians", id: 46 }, "2_corinthians": { chapters: 13, name: "2 Corinthians", id: 47 },
+                "galatians": { chapters: 6, name: "Galatians", id: 48 }, "ephesians": { chapters: 6, name: "Ephesians", id: 49 },
+                "philippians": { chapters: 4, name: "Philippians", id: 50 }, "colossians": { chapters: 4, name: "Colossians", id: 51 },
+                "1_thessalonians": { chapters: 5, name: "1 Thessalonians", id: 52 }, "2_thessalonians": { chapters: 3, name: "2 Thessalonians", id: 53 },
+                "1_timothy": { chapters: 6, name: "1 Timothy", id: 54 }, "2_timothy": { chapters: 4, name: "2 Timothy", id: 55 },
+                "titus": { chapters: 3, name: "Titus", id: 56 }, "philemon": { chapters: 1, name: "Philemon", id: 57 },
+                "hebrews": { chapters: 13, name: "Hebrews", id: 58 }, "james": { chapters: 5, name: "James", id: 59 },
+                "1_peter": { chapters: 5, name: "1 Peter", id: 60 }, "2_peter": { chapters: 3, name: "2 Peter", id: 61 },
+                "1_john": { chapters: 5, name: "1 John", id: 62 }, "2_john": { chapters: 1, name: "2 John", id: 63 },
+                "3_john": { chapters: 1, name: "3 John", id: 64 }, "jude": { chapters: 1, name: "Jude", id: 65 },
                 "revelation": { chapters: 22, name: "Revelation", id: 66 }
             }
         };
 
-        // DOM elements
-        const testamentSelect = document.getElementById('testament-select');
-        const bookSelect = document.getElementById('book-select');
-        const chapterSelect = document.getElementById('chapter-select');
-        const loadButton = document.getElementById('load-button');
-        const sitelenPonaToggle = document.getElementById('sitelen-pona-toggle');
-        const isolatedToggle = document.getElementById('isolated-toggle');
-        const chapterDisplay = document.getElementById('chapter-display');
-        const missingVersesContainer = document.getElementById('missing-verses-container');
-        const debugContainer = document.getElementById('debug-container');
-        const debugInfo = document.getElementById('debug-info');
-        const statusText = document.getElementById('statusText');
-        const reloadBtn = document.getElementById('reload');
-        const shareButton = document.getElementById('share-button');
-        const debugToggle = document.getElementById('debug-toggle');
-        const toast = document.getElementById('toast');
-
-        // Verse count cache to avoid repeated API calls
-        const verseCountCache = {};
+        const NUM_LOOKUP = { 1:"wan", 2:"tu", 3:"tu-wan", 4:"tu-tu", 5:"luka", 10:"luka-luka", 20:"mute", 100:"ali" };
+        const FALLBACK_SITELEN = { a:'awen', e:'e', i:'ijo', j:'jaki', k:'kalama', l:'laso', m:'mama', n:'nena', o:'olin', p:'pilin', s:'sike', t:'telo', u:'uta', w:'wawa' };
         
-        const numberLookup={
-        1: "wan",
-		2: "tu",
-		3: "tu-wan",
-		4: "tu-tu",
-		5: "luka",
-		6: "luka-wan",
-		7: "luka-tu",
-		8: "luka tu-wan",
-		9: "luka tu-tu",
-		10: "luka-luka",
-		20: "mute",
-		40: "mute-mute",
-		100: "ali",
-		200: "ali-ali"
-        }
-
-        // Current state
-        let currentState = {
+        // --- APP STATE ---
+        let state = {
             testament: 'old_testament',
             book: 'genesis',
             chapter: 1,
@@ -641,1068 +192,197 @@
             isolated: false,
             embed: false
         };
-        
-        let sitelenNames={};
-        function numberToNasinNanpaPona(n){
-        	if(n<=100)return numberToSitPona(n);
-        	let str=n+"";
-        	if(str.length%2!==0){
-        		str="0"+str;
-        	}
-        	let lis=str.replace(/(..)/g,"$1,").replace(/,$/g,"").split(",").map(n=>n-0);
-        	//lis.pop();
-        	console.log(lis);
-        	return lis.map((v,i)=>{
-        		let pref="";
-        		if(v!==0){
-        			pref=numberToSitPona(v)+ " ";
-        		}
-        		if(i<lis.length-1){
-        			return pref + "ali";
-        		}else{
-        			return pref;
-        		}
-        	}).join(" ").trim();
-        }
-        
-        function numberToSitPona(n){
-        	var nums=Object.keys(numberLookup).map(v=>v-0).sort((a,b)=>b-a);
-        	
-        	var list=[];
-        	for(var i=0;i<nums.length;i++){
-        		var bigN=nums[i];
-        		if(bigN<=n){
-        			list.push(numberLookup[bigN]);
-        			n=n-bigN;
-        			i--;
-        		}
-        		if(n<=0)break;
-        	}
-        	return list.join(" ");
-        	
-        }
 
-        // Debugging function
-        function debugLog(message) {
-            console.log(message);
-            debugInfo.innerHTML += `<div>${new Date().toLocaleTimeString()}: ${message}</div>`;
-        }
+        const nameLookup = {};
+        const sitelenNames = {};
+        const verseCountCache = {};
 
-        // Show toast message
-        function showToast(message) {
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 2000);
-        }
-
-        // Update URL with current state
-        function updateURL() {
-        
-        	const useFull=false;
-        
-            const params = new URLSearchParams();
-            if(useFull){
-            	params.set('testament', currentState.testament);
-            	params.set('book', currentState.book);
-            	params.set('chapter', currentState.chapter);
-            	if (currentState.verse) params.set('verse', currentState.verse);
-            }else{
-            	var cite=currentState.book.replace(/_/g," ") + " " + currentState.chapter;
-            	if(currentState.verse) cite=cite + ":" + currentState.verse;
-            	params.set('cite', cite);            	
-            }
-            if (currentState.sitelen) params.set('sitelen', 'true');         
-            if (currentState.verse && currentState.isolated){
-            	params.set('iso', 'true');
-            }
-            
-            if (currentState.embed){
-            	params.set('embed', 'true');
-            }
-            
-            const newURL = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
-            window.history.replaceState(null, '', newURL);
-        }
-
-        // Parse URL parameters
-        function parseURL() {
-            const params = new URLSearchParams(window.location.search);
-            
-            if (params.has('cite')){
-            	let v=params.get('cite').replace(/^([1-3]*)[ ]/g,"$1_");
-            	let book = v.split(" ")[0].toLowerCase();
-            	let citeChap=v.split(" ")[1].split(":"); 
-            	let chapter=parseInt(citeChap[0].trim());
-            	let verse=null;
-            	if(citeChap.length>1){
-            		verse=parseInt(citeChap[1].trim());
-            	}
-            	if(bibleBooks.old_testament[book]){
-            		currentState.testament="old_testament";
-            	}else if(bibleBooks.new_testament[book]){
-            		currentState.testament="new_testament";
-            	}
-            	currentState.book=book;
-            	currentState.chapter=chapter;
-            	if(verse){
-            		currentState.verse=verse;
-            	}            	
-            }
-            
-            if (params.has('testament')) {
-                currentState.testament = params.get('testament');
-                testamentSelect.value = currentState.testament;
-            }
-            
-            if (params.has('book')) {
-                currentState.book = params.get('book');
-            }
-            
-            if (params.has('chapter')) {
-                currentState.chapter = parseInt(params.get('chapter'));
-            }
-            
-            if (params.has('verse')) {
-                currentState.verse = parseInt(params.get('verse'));
-            }
-            
-            if (params.has('sitelen')) {
-                currentState.sitelen = params.get('sitelen') === 'true';
-                sitelenPonaToggle.checked = currentState.sitelen;
-            }
-            
-            if (params.has('iso')) {
-                currentState.isolated = params.get('iso') === 'true';
-                isolatedToggle.checked = currentState.isolated;
-            }
-            if (params.has('embed')) {
-                currentState.embed = params.get('embed') === 'true';
-            }
-        }
-
-        // Populate book dropdown based on selected testament
-        function populateBooks() {
-            const testament = testamentSelect.value;
-            bookSelect.innerHTML = '';
-            
-            for (const [key, value] of Object.entries(bibleBooks[testament])) {
-                const option = document.createElement('option');
-                option.value = key;
-                option.textContent = value.name;
-                option.selected = (key === currentState.book);
-                bookSelect.appendChild(option);
-            }
-            
-            // After populating books, populate chapters for the selected book
-            populateChapters();
-        }
-
-        // Populate chapter dropdown based on selected book
-        function populateChapters() {
-            const testament = testamentSelect.value;
-            const book = bookSelect.value;
-            const chapterCount = bibleBooks[testament][book].chapters;
-            
-            chapterSelect.innerHTML = '';
-            
-            for (let i = 1; i <= chapterCount; i++) {
-                const option = document.createElement('option');
-                option.value = i;
-                option.textContent = `Chapter ${i}`;
-                option.selected = (i === currentState.chapter);
-                chapterSelect.appendChild(option);
-            }
-        }
-
-        // Get the expected verse count for a chapter from Bolls Bible API
-        async function getExpectedVerseCount(bookId, chapter) {
-            const cacheKey = `${bookId}-${chapter}`;
-            
-            // Return cached value if available
-            if (verseCountCache[cacheKey]) {
-                return verseCountCache[cacheKey];
-            }
-            
-            try {
-                // Use Bolls Bible API to get the actual verse count
-                const url = `https://bolls.life/get-text/ASV/${bookId}/${chapter}/`;
-                debugLog(`Fetching verse count from: ${url}`);
-                
-                const response = await fetch(url);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const verses = await response.json();
-                const verseCount = verses.length;
-                
-                // Cache the result
-                verseCountCache[cacheKey] = verseCount;
-                
-                debugLog(`Found ${verseCount} verses for book ${bookId}, chapter ${chapter}`);
-                return verseCount;
-            } catch (error) {
-                debugLog(`Error fetching verse count: ${error.message}. Using fallback value.`);
-                // Fallback to typical verse counts if API fails
-                return getFallbackVerseCount(bookId, chapter);
-            }
-        }
-
-        // Fallback verse counts for when the API is unavailable
-        function getFallbackVerseCount(bookId, chapter) {
-            // This is a simplified fallback - in a real app, you'd want a complete mapping
-            // For now, we'll return typical verse counts based on book type
-            if (bookId >= 40) { // New Testament books
-                return 25; // Average NT verse count
-            } else { // Old Testament books
-                return 30; // Average OT verse count
-            }
-        }
-
-        // Load the selected chapter from GitHub
-        async function loadChapter() {
-            currentState.testament = testamentSelect.value;
-            currentState.book = bookSelect.value;
-            currentState.chapter = parseInt(chapterSelect.value);
-            
-            // Format chapter number with leading zeros (4 digits)
-            const formattedChapter = currentState.chapter.toString().padStart(4, '0');
-            
-            // Construct URL with underscores for spaces
-            const url = `https://raw.githubusercontent.com/PaulieGlot/lipu-sewi/master/bible/${currentState.testament}/${currentState.book}/${formattedChapter}.txt`;
-            
-            chapterDisplay.innerHTML = '<div class="loading">Loading...</div>';
-            missingVersesContainer.innerHTML = '';
-            debugLog(`Attempting to load: ${currentState.testament}/${currentState.book}/${formattedChapter}.txt`);
-            debugLog(`URL: ${url}`);
-            
-            try {
-                // Get expected verse count from API
-                const bookId = bibleBooks[currentState.testament][currentState.book].id;
-                const expectedVerses = await getExpectedVerseCount(bookId, currentState.chapter);
-                
-                // Fetch the Toki Pona text
-                const response = await fetch(url);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const text = await response.text();
-                displayChapter(text, expectedVerses);
-                debugLog(`Successfully loaded chapter ${currentState.chapter} of ${currentState.book}`);
-                
-                // Update URL
-                updateURL();
-            } catch (error) {
-                chapterDisplay.innerHTML = `
-                    <div class="error">
-                        <p>Error loading chapter: ${error.message}</p>
-                        <p>This chapter might not be available yet in the repository.</p>
-                        <p>Check the debug section below for more details.</p>
-                    </div>
-                `;
-                debugLog(`Failed to load chapter: ${error.message}`);
-            }
-        }
-        
-        //TODO Finish this
-        function getCurrentVerseList(){
-        	var vs=currentState.verse.split("-");
-        	if(vs.length===1)return vs;
-        	var fvs=[];
-        	for(var i=vs[0]-0;i<=vs[1]-0;i++){
-        		fvs.push(i);
-        	}
-        	return fvs;
-        }
-
-        // Display the chapter content
-        function displayChapter(text, expectedVerses) {
-            const lines = text.split('\n').filter(line => line.trim() !== '');
-            const bookName = bibleBooks[currentState.testament][currentState.book].name;
-            
-            sitelenNames={};
-            
-            let html = `
-                <div class="chapter-header">
-                    <h2 class="chapter-title">${bookName} ${currentState.chapter}</h2>
-                </div>
-            `;
-            
-            let verseCount = 0;
-            
-            // Parse and display each verse
-            for (const line of lines) {
-                // Match the pattern: verse number, then ? or !, then the text
-                const match = line.match(/^(\d+):\s*([?!])\s*(.*)$/);
-                
-                if (match) {
-                    verseCount++;
-                    const verseNum = parseInt(match[1]);
-                    const status = match[2]; // ? or !
-                    const content = match[3];
-                    
-                    const isHighlighted = currentState.verse === verseNum;
-                    
-                    html += `
-                        <div class="verse ${status === '!' ? 'solidified' : 'unsolidified'} ${isHighlighted ? 'highlighted' : ''}" id="verse-${verseNum}">
-                            <span class="verse-number-lt"><span class="latina">${verseNum}</span></span>
-                            
-                            <span class="verse-content">${formatVerseContent(content)}</span><span class="verse-number-st"><span class="sitelen">${numberToNasinNanpaPona(verseNum)}</span></span>
-                        </div>
-                    `;
-                } else if (line.trim() !== '') {
-                    // Handle lines that don't match the pattern
-                    html += `
-                        <div class="verse">
-                            <span class="verse-content">${formatVerseContent(line)}</span>
-                        </div>
-                    `;
-                }
-            }
-            
-            // Check for missing verses
-            if (verseCount < expectedVerses) {
-                missingVersesContainer.innerHTML = `
-                    <div class="missing-verses">
-                        <p>Note: This chapter has ${verseCount} of ${expectedVerses} verses translated.</p>
-                        <p>Missing verses: ${expectedVerses - verseCount}</p>
-                    </div>
-                `;
-            } else {
-                missingVersesContainer.innerHTML = '';
-            }
-            
-            chapterDisplay.innerHTML = html;
-            
-            // Apply sitelen pona font if toggled
-            if (isolatedToggle.checked) {
-                applyIsolated();
-            }
-            
-            // Apply sitelen pona font if toggled
-            if (sitelenPonaToggle.checked) {
-                applySitelenPonaFont();
-            }
-            
-            
-            // Scroll to highlighted verse if specified
-            if (currentState.verse) {
-                const verseElement = document.getElementById(`verse-${currentState.verse}`);
-                if (verseElement) {
-                    setTimeout(() => {
-                        verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 100);
-                }
-            }
-            document.querySelectorAll(".verse-number-st").forEach(e=>e.onclick=()=>{
-            	document.querySelectorAll(".verse.highlighted")
-            		    .forEach(d=>d.classList.remove("highlighted"));
-            	var verse=e.parentNode.id.split("-")[1]-0;
-            	if(verse !== currentState.verse){
-            		document.querySelector("#verse-" + verse).classList.add("highlighted");
-            		currentState.verse=verse;
-            	}else{
-            		currentState.verse=null;
-            		currentState.isolated=false;
-            		isolatedToggle.checked = currentState.isolated;
-            		removeIsolated();
-            	}
-            	showToast("URL updated");
-            	updateURL();
-            });
-            
-            document.querySelectorAll(".verse-number-lt").forEach(e=>e.onclick=()=>{
-            	document.querySelectorAll(".verse.highlighted")
-            		    .forEach(d=>d.classList.remove("highlighted"));
-            	var verse=e.parentNode.id.split("-")[1]-0;
-            	if(verse !== currentState.verse){
-            		document.querySelector("#verse-" + verse).classList.add("highlighted");
-            		currentState.verse=verse;
-            	}else{
-            		currentState.verse=null;
-            		currentState.isolated=false;
-            		isolatedToggle.checked = currentState.isolated;
-            		removeIsolated();
-            	}
-            	showToast("URL updated");
-            	updateURL();
-            });
-            
-            debugLog(`Displayed ${verseCount} verses (expected: ${expectedVerses})`);
-        }
-
-		function rep(txt,n,d){
-		    if(typeof d==="undefined")d="";
-			let arr=[];
-			for(var i=0;i<n;i++){
-				arr.push(txt);
-			}
-			return arr.join(d);
-		}
-		
-		function nasinsitelenkalamapilinjalili(nm){
-			m=nm.toLowerCase();
-			wlist=fullDictionary.map(a=>a).sort((a,b)=>a.length-b.length);
-			let syms=[];
-			while(m.length>0){
-				let maxDot=0;
-				let maxWord=null;
-				for(var i=0;i<wlist.length;i++){
-					if(wlist[i][0]===m[0]){
-						let dot=1;
-						for(var j=1;j<Math.min(wlist[i].length,m.length);j++){
-							if(wlist[i][j]===m[j]){
-								dot++;
-							}else{
-								break;
-							}
-						}
-						if(dot>maxDot){
-							maxWord=wlist[i];
-							maxDot=dot;
-						}					
-					}
-				}
-				if(maxDot===0){
-					console.log("Nothing found!");
-					break;
-				}
-				
-				syms.push({"word":maxWord,"dots":maxDot});
-				m=m.substr(maxDot);
-			}
-			return syms;
-			
-		}
-
-        // Format verse content with proper name handling
-        function formatVerseContent(text) {
-        
-        	var problem=false;
-        
-            // Handle names (words starting with &) by wrapping them in a span with class "name-rect"
-            text=text.replace(/&/g,"~");
-            text=text.replace(/([^~A-Za-z])([A-Z])/g,"$1~$2");
-            text=text.replace(/\.\ (\ )*/g,". ");
-            var pad="la";
-            //if sitelen, need to figure out spaces
-            //this just adds a span
-            text= text.replace(/@/g,"^^");
-            
-            text= text.replace(/([.;!:?])/g,(a,p,s)=>('$' + p +'@'));
-            text= text.replace(/[\^][\^]/g,"&#64;");
-            var textList=text.split("@");
-            var nstart=0;
-            var splitLaMin=5;
-            var minSplitWNum=3;
-            var splitLaTot=15;
-            
-            text=textList.map(l=>{
-            		var words=l.split(" ");
-            		var pnstart=nstart;
-            		var pref="";
-            		
-            		
-            		
-            		
-            		if(pnstart>0){
-            			pref='<span class="space">' + rep(pad,pnstart," ") + '</span>';
-            		}
-            		
-            		var redoList=[];
-            		var redo=true;
-            		while(redo){
-            			var last00=[];
-            			var last01=[];
-            			var last02=[];
-            			var last03=[];
-            			var last04=[];
-            			var wnum=pnstart;
-            		    redo=false;
-            			var blist=[];
-            			l=words.map((w,i)=>{
-            		    	var aw=w.replace(/[,.;?$]/g,"").trim();
-            		    	var forceLine=false;
-            		    	if(redoList.findIndex(r=>r.num===i)>=0){
-            		    		wnum=1;
-            		    		forceLine=true;
-            		    	}
-            		    	
-            		    	if(w.indexOf("~")===0){
-            		    		let sp=convertNameToSitelenPona(w.replace("~",""));
-            		    		console.log(sp);
-            		    		let w2=sp.words;
-            		    		wnum+=w2.split(" ").length;
-            		    	}
-            		    	if(aw.match("^[0-9][0-9]*$")){
-            		    		let w2=numberToNasinNanpaPona(aw-0);
-            		    		wnum+=w2.split(" ").length;
-            		    		w=w.replace(aw,w2);
-            		    	}
-            		    	if(aw==="o"){
-            		    		if(forceLine){
-            		    			last00.push(wnum);
-            		    		}
-            					if(last00.length>0){
-            						wnum=last00.at(-1);
-            						w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> ' + w; 	
-            					}else if(wnum>minSplitWNum){
-            						blist.push({"word":aw,"num":i});
-            					}            				
-            					last00.push(wnum);
-            					last01=[];
-            					last02=[];
-            					last03=[];
-            					last04=[];
-            				}else if(aw==="li"){
-            					if(forceLine){
-            		    			last01.push(wnum);
-            		    		}
-            					if(last01.length>0){
-            						wnum=last01.at(-1);
-            						w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> ' + w; 	
-            					}else if(wnum>minSplitWNum){
-            							blist.push({"word":aw,"num":i});
-            					}            				           				
-            					last01.push(wnum);
-            					last02=[];
-            					last03=[];
-            					last04=[];
-            				}else if(aw==="e"){
-            					if(forceLine){
-            		    			last02.push(wnum);
-            		    		}
-            					if(last02.length>0){
-            						wnum=last02.at(-1);
-            						w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> '+w; 	
-            					}else if(wnum>minSplitWNum){
-            							blist.push({"word":aw,"num":i});
-            					}            				           				
-            					last02.push(wnum);
-            					last03=[];
-            					last04=[];
-            				}else if(aw==="tawa" || aw === "kepeken" || aw === "tan" || aw === "tan" || aw === "sama" || aw === "lon"){
-            					if(forceLine){
-            		    			last03.push(wnum);
-            		    		}
-            					if(last03.length>0){
-            						wnum=last03.at(-1);
-            						w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> '+w; 	
-            					}else if(wnum>minSplitWNum){
-            							blist.push({"word":aw,"num":i});
-            					}            				          				
-            					last03.push(wnum);
-            					last04=[];
-            				}else if((aw==="la") && wnum>splitLaMin && ((words.length-i)+wnum)>splitLaTot){
-            					wnum=1;
-            					w=w+'*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span>';
-            					
-            					last00=[];
-            					last01=[];
-            					last02=[];
-            					last03=[];
-            					last04=[];
-            				}else if((aw==="en")){
-            					if(forceLine){
-            		    			last04.push(wnum);
-            		    		}
-            					if(last04.length>0){
-            						wnum=last04.at(-1);
-            						w='*&nbsp;@<span class="space">' + rep(pad,wnum," ") + '</span> '+w; 	
-            					}else if(wnum>minSplitWNum){
-            							blist.push({"word":aw,"num":i});
-            					}            				           				
-            					last04.push(wnum);
-            				}
-            				if(wnum>splitLaTot){
-            					redo=true;
-            				}     
-            				
-            				if(w.length>0){
-            					wnum++;
-            				}
-            				
-            				       			
-            				return w;
-            			}).join("<span class='st-space'>&#8203;</span><span class='lt-space'> </span>");
-            			l=l.replace(/\*/g,'<span class="newline2">');
-            			l=l.replace(/\$/g,'<span class="newline">');
-            			l=l.replace(/\@/g,'</span>');
-            			if(l.at(-1)===":"){
-            		   		nstart=1;
-            		   		console.log("Colon");
-            			}else{
-            		   		nstart=0;
-            			}
-            			if(redo){
-            				var found=false;
-            				for(var j=0;j<blist.length;j++){
-            					if(redoList.findIndex(ww=>ww.num===blist[j].num)<0){
-            						redoList.push(blist[j]);
-            						found=true;
-            						break;
-            					}
-            				}
-            				if(!found){
-            					redo=false;
-            					showToast("Wrapping problem");
-            					problem=true;
-            				}
-            			}
-            		}
-            		
-            		return pref+l;
-            		//'<span class="newline">' + p + '</span>
-            	}).join("</span>");
-            
-            
-            //need to deal with : and ,
-            text= text.replace(/([,])/g,(a,p,s)=>('<span class="punct">' + p + '</span>'));
-            text= text.replace(/[ ][ ]*/g," ");
-            
-            
-            var ret= text.replace(/~(\w+)/g, (a,p,s)=>
-                '<span class="name-tp">' + convertNameToTokiPona(p) + '</span>' + 
-                '<span class="name-rect">[' + convertNameToSitelenPona(p,true).html + ']</span>');
-            if(problem){
-            	ret=ret+"<div class='st-problem'>Warning: wrapping issue</div>";
-            }
-            return ret;
-        }
-
-		function applyIsolated() {
-            chapterDisplay.classList.add('isolated');
-        }
-        
-        function removeIsolated() {
-            chapterDisplay.classList.remove('isolated');
-        }
-        
-        // Apply sitelen pona font to verse content
-        function applySitelenPonaFont() {
-            chapterDisplay.classList.add('sitelen-pona-mode');
-            chapterDisplay.classList.remove('latina-pona-mode');
-        }
-
-        // Remove sitelen pona font from verse content
-        function removeSitelenPonaFont() {
-            chapterDisplay.classList.remove('sitelen-pona-mode');
-            chapterDisplay.classList.add('latina-pona-mode');
-        }
-
-        // Font loading check function
-        async function checkFont() {
-            statusText.textContent = 'loading font…';
-            try {
-                // 1) Ask the browser to load "NasinNanpa" (this triggers fetch if needed).
-                await document.fonts.load('16px "NasinNanpa"');
-                // 2) Wait for font subsystem to be ready (helps with network latency)
-                await document.fonts.ready;
-                // 3) Check whether the font is available to the renderer
-                const available = document.fonts.check('16px "NasinNanpa"');
-                statusText.textContent = available ? 'loaded' : 'not detected (partial or blocked)';
-                // Force a repaint so glyphs appear immediately if available
-                if (sitelenPonaToggle.checked) {
-                    applySitelenPonaFont();
-                }
-            } catch(err) {
-                console.warn('font load error', err);
-                statusText.textContent = 'error (see console)';
-            }
-        }
-
-        // Copy URL to clipboard
-        function copyURLToClipboard() {
-            const url = window.location.href;
-            navigator.clipboard.writeText(url).then(() => {
-                showToast('Link copied to clipboard!');
-            }).catch(err => {
-                console.error('Failed to copy: ', err);
-                showToast('Failed to copy link');
-            });
-        }
-
-        const nameLookup={};
-        
-        const fullDictionary=[
-        "a",
-"akesi",
-"ala",
-"alasa",
-"ale",
-"ali",
-"anpa",
-"ante",
-"anu",
-"awen",
-"e",
-"en",
-"esun",
-"ijo",
-"ike",
-"ilo",
-"insa",
-"jaki",
-"jan",
-"jelo",
-"jo",
-"kala",
-"kalama",
-"kama",
-"kasi",
-"ken",
-"kepeken",
-"kili",
-"kiwen",
-"ko",
-"kon",
-"kule",
-"kulupu",
-"kute",
-"la",
-"lape",
-"laso",
-"lawa",
-"len",
-"lete",
-"li",
-"lili",
-"linja",
-"lipu",
-"loje",
-"lon",
-"luka",
-"lukin",
-"lupa",
-"ma",
-"mama",
-"mani",
-"meli",
-"mi",
-"mije",
-"moku",
-"moli",
-"monsi",
-"mu",
-"mun",
-"musi",
-"mute",
-"nanpa",
-"nasa",
-"nasin",
-"nena",
-"ni",
-"nimi",
-"noka",
-"o",
-"olin",
-"ona",
-"open",
-"pakala",
-"pali",
-"palisa",
-"pan",
-"pana",
-"pi",
-"pilin",
-"pimeja",
-"pini",
-"pipi",
-"poka",
-"poki",
-"pona",
-"pu",
-"sama",
-"seli",
-"selo",
-"seme",
-"sewi",
-"sijelo",
-"sike",
-"sin",
-"sina",
-"sinpin",
-"sitelen",
-"sona",
-"soweli",
-"suli",
-"suno",
-"supa",
-"suwi",
-"tan",
-"taso",
-"tawa",
-"telo",
-"tenpo",
-"toki",
-"tomo",
-"tu",
-"unpa",
-"uta",
-"utala",
-"walo",
-"wan",
-"waso",
-"wawa",
-"weka",
-"wile",
-"namako",
-"kin",
-"oko",
-"kipisi",
-"leko",
-"monsuta",
-"tonsi",
-"jasima",
-"kijetesantakalu",
-"soko",
-"meso",
-"epiku",
-"kokosila",
-"lanpan",
-"n",
-"misikeke",
-"ku"];
-        const fallbackSitelen={
-            'a' : 'awen',
-            'e' : 'e',
-            'i' : 'ijo',
-            'j' : 'jaki',
-            'k' : 'kalama',
-            'l' : 'laso',
-            'm' : 'mama',
-            'n' : 'nena',
-            'o' : 'olin',
-            'p' : 'pilin',
-            's' : 'sike',
-            't' : 'telo',
-            'u' : 'uta',
-            'w' : 'wawa'
+        // --- UI ELEMENTS ---
+        const ui = {
+            testament: document.getElementById('testament-select'),
+            book: document.getElementById('book-select'),
+            chapter: document.getElementById('chapter-select'),
+            display: document.getElementById('chapter-display'),
+            missing: document.getElementById('missing-verses-container'),
+            sitelenToggle: document.getElementById('sitelen-pona-toggle'),
+            isolatedToggle: document.getElementById('isolated-toggle'),
+            toast: document.getElementById('toast'),
+            status: document.getElementById('statusText')
         };
 
-        async function loadNameText(csvName){
-            const response = await fetch("https://raw.githubusercontent.com/PaulieGlot/lipu-sewi/master/names/" + csvName + ".csv");
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const txt= await response.text();
-            let lines=txt.split("\n");
-            let header=lines[0];
-            lines.filter((l,i)=>i>0)
-                 .map(l=>l.split(","))
-                 .forEach(l=>{
-                     //typical headnoun	proper noun	english
-                     let m={};
-                     m.head=l[0];
-                     m.proper=l[1];
-                     m.english=l[2];
-                     if(l.length>3){
-                        m.sitelen = l[3];
-                     }
-                     nameLookup[m.english]=m;
-                 });
-        }
-        
-        async function loadNames(){
-            if(nameLookup.$load)return nameLookup;
-            await loadNameText("place-names");
-            await loadNameText("people-names");
-            nameLookup.$load=true;
-            return nameLookup;
-        }
+        // --- HELPERS ---
+        const showToast = (msg) => {
+            ui.toast.textContent = msg;
+            ui.toast.classList.add('show');
+            setTimeout(() => ui.toast.classList.remove('show'), 2000);
+        };
 
-        function convertNameToTokiPona(name){
-            let lookup = nameLookup;
-            let b= lookup[name];
-            if(!b)return name;
-            if(b.proper)return b.proper;
-            return name;
-        }
-        function convertNameToSitelenPona(name, count){
-            let lookup = nameLookup;
-            let b= lookup[name];
-            if(!b){
-            	b={proper:name};
-            }
-            if(b.sitelen){
-            	if(sitelenNames[b.sitelen]){
-            			return sitelenNames[b.sitelen];
-            	}
-            	if(count){
-            		sitelenNames[b.sitelen]={"words":b.sitelen.split(" ")[0], "html":b.sitelen.split(" ")[0]};
-            	}
-            	return {words:b.sitelen, html: b.sitelen};
-            }
-            if(!b.sitelen){
-                let build = "";
-                if(fullDictionary.indexOf(b.proper.toLowerCase())>=0){
-                	return {words: (b.proper.toLowerCase() + ":"), html: (b.proper.toLowerCase() + "&#xF199D;")};	
+        const updateURL = () => {
+            const params = new URLSearchParams();
+            let cite = `${state.book.replace(/_/g, " ")} ${state.chapter}`;
+            if (state.verse) cite += `:${state.verse}`;
+            params.set('cite', cite);
+            if (state.sitelen) params.set('sitelen', 'true');
+            if (state.verse && state.isolated) params.set('iso', 'true');
+            if (state.embed) params.set('embed', 'true');
+            window.history.replaceState(null, '', `${window.location.origin}${window.location.pathname}?${params.toString()}`);
+        };
+
+        const numberToSitPona = (n) => {
+            if (n === 0) return "";
+            let keys = Object.keys(NUM_LOOKUP).map(Number).sort((a,b) => b-a);
+            let result = [];
+            for (let k of keys) {
+                while (n >= k) {
+                    result.push(NUM_LOOKUP[k]);
+                    n -= k;
                 }
-                let nm="";
-                let htm="";
-                if(true){
-                	let nsllpj=nasinsitelenkalamapilinjalili(b.proper);
-                	htm=nsllpj.map(c=>{
-                		let dots=rep(",",c.dots);
-                		return c.word + dots;
-                	}).join("");
-                	nm=nsllpj.map(c=>c.word).join(" ");
-                	
-                }else{
+            }
+            return result.join(" ");
+        };
+
+        const numberToNasinNanpa = (n) => {
+            if (n <= 100) return numberToSitPona(n);
+            let str = n.toString();
+            if (str.length % 2 !== 0) str = "0" + str;
+            let pairs = str.match(/.{1,2}/g).map(Number);
+            return pairs.map((v, i) => {
+                let pref = v !== 0 ? numberToSitPona(v) + " " : "";
+                return i < pairs.length - 1 ? pref + "ali" : pref;
+            }).join(" ").trim();
+        };
+
+        // --- CORE LOGIC ---
+        async function fetchChapter() {
+            const formatted = state.chapter.toString().padStart(4, '0');
+            const url = `https://raw.githubusercontent.com/PaulieGlot/lipu-sewi/master/bible/${state.testament}/${state.book}/${formatted}.txt`;
+            
+            ui.display.innerHTML = '<div class="loading">Loading...</div>';
+            
+            try {
+                const [resp, expectedCount] = await Promise.all([
+                    fetch(url),
+                    getVerseCount(BIBLE_BOOKS[state.testament][state.book].id, state.chapter)
+                ]);
                 
-                	let ltrs=b.proper.split("");
-                	nm=ltrs.map(v=>[v,fallbackSitelen[v.toLowerCase()]])
-                    	.map(v=>(v[1])?v[1]:v[0])
-                    	.join(" ");
-                    htm=nm;
-                }
-                if(sitelenNames[nm]){
-            			return sitelenNames[nm];
-            	}
-                if(count){
-            		sitelenNames[nm]={words:nm.split(" ")[0], html:nm.split(" ")[0]};
-            	}
-                return {words:nm, html:htm};
+                if (!resp.ok) throw new Error("Chapter not found");
+                const text = await resp.text();
+                renderChapter(text, expectedCount);
+                updateURL();
+            } catch (e) {
+                ui.display.innerHTML = `<div class="error">Error: ${e.message}</div>`;
             }
         }
 
-        function navigateChapter(direction) {
-    		const testament = testamentSelect.value;
-    		const bookKeys = Object.keys(bibleBooks[testament]);
-    		let bookIndex = bookKeys.indexOf(bookSelect.value);
-    		let currentChapter = parseInt(chapterSelect.value);
-    		const maxChapters = bibleBooks[testament][bookSelect.value].chapters;
-		
-    		if (direction === 'next') {
-        		if (currentChapter < maxChapters) {
-            		// Just go to next chapter
-            		chapterSelect.value = currentChapter + 1;
-        		} else if (bookIndex < bookKeys.length - 1) {
-            		// Go to first chapter of next book
-            		bookSelect.value = bookKeys[bookIndex + 1];
-            		populateChapters();
-            		chapterSelect.value = 1;
-        		} else {
-            		showToast("End of Testament");
-            		return;
-        		}
-    		} else { // direction === 'prev'
-        		if (currentChapter > 1) {
-            		// Just go to previous chapter
-            		chapterSelect.value = currentChapter - 1;
-        		} else if (bookIndex > 0) {
-            		// Go to last chapter of previous book
-            		bookSelect.value = bookKeys[bookIndex - 1];
-            		populateChapters();
-            		const prevBookMaxChapters = bibleBooks[testament][bookSelect.value].chapters;
-            		chapterSelect.value = prevBookMaxChapters;
-        		} else {
-            		showToast("Beginning of Testament");
-            		return;
-        		}
-    		}
-    		
-    		// Trigger the load
-    		currentState.verse = null; // Clear verse highlight on nav
-    		loadChapter();
-		}
-        
-        // Initialize the page
-        async function init() {
-        
-            // Parse URL parameters
-            parseURL();
-            
-            if(!currentState.embed){
-            	document.body.classList.remove("embed");
-            }
-        
-            await loadNames();
-            
-            // Populate dropdowns
-            populateBooks();
-            
-            // Load the chapter if we have a valid selection
-            if (currentState.book && currentState.chapter) {
-                loadChapter();
-            }
-            
-            // Set up event listeners
-            testamentSelect.addEventListener('change', function() {
-                currentState.testament = this.value;
-                populateBooks();
-            });
-            
-            bookSelect.addEventListener('change', function() {
-                currentState.book = this.value;
-                populateChapters();
-            });
-            
-            chapterSelect.addEventListener('change', function() {
-                currentState.chapter = parseInt(this.value);
-                currentState.verse = null; // Reset verse when changing chapter
-            });
-            
-            loadButton.addEventListener('click', loadChapter);
-            
-            sitelenPonaToggle.addEventListener('change', function() {
-                currentState.sitelen = this.checked;
-                if (this.checked) {
-                    applySitelenPonaFont();
-                } else {
-                    removeSitelenPonaFont();
-                }
-                updateURL();
-            });
-            
-            isolatedToggle.addEventListener('change', function() {
-                currentState.isolated = this.checked;
-                if (this.checked) {
-                    applyIsolated();
-                } else {
-                    removeIsolated();
-                }
-                updateURL();
-            });
-            
-            // Allow manual font reload
-            reloadBtn.addEventListener('click', async () => {
-                statusText.textContent = 'retrying…';
-                try {
-                    // re-attempt loading — calling fonts.load again nudges the browser
-                    await document.fonts.load('1em "NasinNanpa"');
-                    await document.fonts.ready;
-                } catch(e) { /* ignore */ }
-                await checkFont();
-            });
-            
-            // Share button
-            shareButton.addEventListener('click', copyURLToClipboard);
-            
-            // Debug toggle
-            debugToggle.addEventListener('change', function() {
-                debugContainer.style.display = this.checked ? 'block' : 'none';
-            });
-            
-            // Initial font check
-            checkFont();
-            
-            debugLog('Page initialized. Open browser console (F12) for additional debugging.');
-            debugLog('Verse count data provided by Bolls Bible API');
-            
-            document.getElementById('prev-chapter').addEventListener('click', () => navigateChapter('prev'));
-			document.getElementById('next-chapter').addEventListener('click', () => navigateChapter('next'));
+        async function getVerseCount(bookId, chap) {
+            const key = `${bookId}-${chap}`;
+            if (verseCountCache[key]) return verseCountCache[key];
+            try {
+                const r = await fetch(`https://bolls.life/get-text/ASV/${bookId}/${chap}/`);
+                const data = await r.json();
+                verseCountCache[key] = data.length;
+                return data.length;
+            } catch { return 25; }
         }
 
-        // Start the application
-        init();
-        
-        
+        function renderChapter(text, expected) {
+            const lines = text.split('\n').filter(l => l.trim());
+            const bookName = BIBLE_BOOKS[state.testament][state.book].name;
+            let html = `<div class="chapter-header"><h2 class="chapter-title">${bookName} ${state.chapter}</h2></div>`;
+            
+            let count = 0;
+            lines.forEach(line => {
+                const match = line.match(/^(\d+):\s*([?!])\s*(.*)$/);
+                if (match) {
+                    count++;
+                    const [_, num, status, content] = match;
+                    const isHigh = state.verse == num;
+                    html += `
+                        <div class="verse ${status === '!' ? 'solidified' : 'unsolidified'} ${isHigh ? 'highlighted' : ''}" id="verse-${num}">
+                            <span class="verse-number-lt">${num}</span>
+                            <span class="verse-content">${formatContent(content)}</span>
+                            <span class="verse-number-st"><span class="sitelen">${numberToNasinNanpa(num)}</span></span>
+                        </div>`;
+                }
+            });
+
+            ui.display.innerHTML = html;
+            ui.missing.innerHTML = count < expected ? `<div class="missing-verses">Translated: ${count}/${expected}</div>` : '';
+            
+            if (state.isolated) ui.display.classList.add('isolated');
+            if (state.sitelen) ui.display.classList.add('sitelen-pona-mode');
+
+            if (state.verse) {
+                const el = document.getElementById(`verse-${state.verse}`);
+                if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+            }
+        }
+
+        function formatContent(text) {
+            // Simplified name handling & number conversion
+            let processed = text.replace(/&/g, "~").replace(/([.;!:?])/g, "$1 ");
+            
+            return processed.split(" ").map(word => {
+                if (word.startsWith("~")) {
+                    const name = word.slice(1).replace(/[,.;!?]/g, "");
+                    return `<span class="name-tp">${name}</span><span class="name-rect">[${name}]</span>`;
+                }
+                if (/^\d+$/.test(word)) return numberToNasinNanpa(parseInt(word));
+                return word;
+            }).join(" ");
+        }
+
+        // --- INITIALIZATION ---
+        function init() {
+            // Populate Books
+            const updateBooks = () => {
+                ui.book.innerHTML = Object.entries(BIBLE_BOOKS[ui.testament.value])
+                    .map(([id, info]) => `<option value="${id}">${info.name}</option>`).join("");
+                updateChapters();
+            };
+
+            const updateChapters = () => {
+                const count = BIBLE_BOOKS[ui.testament.value][ui.book.value].chapters;
+                ui.chapter.innerHTML = Array.from({length: count}, (_, i) => `<option value="${i+1}">Chapter ${i+1}</option>`).join("");
+            };
+
+            ui.testament.onchange = updateBooks;
+            ui.book.onchange = updateChapters;
+            
+            document.getElementById('load-button').onclick = () => {
+                state.testament = ui.testament.value;
+                state.book = ui.book.value;
+                state.chapter = parseInt(ui.chapter.value);
+                state.verse = null;
+                fetchChapter();
+            };
+
+            ui.sitelenToggle.onchange = (e) => {
+                state.sitelen = e.target.checked;
+                ui.display.classList.toggle('sitelen-pona-mode', state.sitelen);
+                updateURL();
+            };
+
+            ui.display.onclick = (e) => {
+                const verseEl = e.target.closest('.verse');
+                if (verseEl) {
+                    const vNum = parseInt(verseEl.id.split('-')[1]);
+                    document.querySelectorAll('.verse').forEach(v => v.classList.remove('highlighted'));
+                    if (state.verse === vNum) {
+                        state.verse = null;
+                    } else {
+                        state.verse = vNum;
+                        verseEl.classList.add('highlighted');
+                    }
+                    updateURL();
+                }
+            };
+
+            updateBooks();
+            fetchChapter();
+        }
+
+        window.onload = init;
     </script>
 </body>
 </html>
