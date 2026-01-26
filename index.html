@@ -697,6 +697,23 @@
             }, 2000);
         }
 
+		function verseShortHand(){
+			var pverse=currentState.verse[0];
+			var bld=pverse;
+			var nxt="";
+			currentState.verse.forEach((v,i)=>{
+				if(i===0)return;
+				if(v===pverse||v===pverse+1){
+					nxt="-" + v;
+					pverse=v;
+				}else{
+					bld=bld+nxt+";" + v;
+					pverse=v;
+					nxt="";
+				}
+			});
+			return bld +nxt;
+		}
         // Update URL with current state
         function updateURL() {
         
@@ -707,14 +724,16 @@
             	params.set('testament', currentState.testament);
             	params.set('book', currentState.book);
             	params.set('chapter', currentState.chapter);
-            	if (currentState.verse) params.set('verse', currentState.verse);
+            	if (currentState.verse.length>0){
+            	 params.set('verse', verseShortHand());
+            	}
             }else{
             	var cite=currentState.book.replace(/_/g," ") + " " + currentState.chapter;
-            	if(currentState.verse) cite=cite + ":" + currentState.verse;
+            	if (currentState.verse.length>0) cite=cite + ":" + verseShortHand();
             	params.set('cite', cite);            	
             }
             if (currentState.sitelen) params.set('sitelen', 'true');         
-            if (currentState.verse && currentState.isolated){
+            if (currentState.verse.length>0 && currentState.isolated){
             	params.set('iso', 'true');
             }
             
@@ -725,6 +744,21 @@
             const newURL = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
             window.history.replaceState(null, '', newURL);
         }
+        
+        function listFrom(a,b){
+        	if(!b)b=a;
+        	var ret=[];
+        	for(var i=a;i<=b;i++){
+        		ret.push(i);
+        	}
+        	return ret;
+        }
+
+		function parseVerse(v){
+			var vclob=v.split(";");
+			return vclob.map(vc=>vc.split("-"))
+			     .flatMap(rl=>listFrom(rl[0]-0,rl.at(-1)-0));
+		}
 
         // Parse URL parameters
         function parseURL() {
@@ -735,9 +769,9 @@
             	let book = v.split(" ")[0].toLowerCase();
             	let citeChap=v.split(" ")[1].split(":"); 
             	let chapter=parseInt(citeChap[0].trim());
-            	let verse=null;
+            	let verse=[];
             	if(citeChap.length>1){
-            		verse=parseInt(citeChap[1].trim());
+            		verse=parseVerse(citeChap[1].trim());
             	}
             	if(bibleBooks.old_testament[book]){
             		currentState.testament="old_testament";
@@ -746,9 +780,7 @@
             	}
             	currentState.book=book;
             	currentState.chapter=chapter;
-            	if(verse){
-            		currentState.verse=verse;
-            	}            	
+            	currentState.verse=verse;
             }
             
             if (params.has('testament')) {
@@ -765,7 +797,7 @@
             }
             
             if (params.has('verse')) {
-                currentState.verse = parseInt(params.get('verse'));
+                currentState.verse = parseVerse(params.get('verse'));
             }
             
             if (params.has('sitelen')) {
@@ -909,15 +941,14 @@
             }
         }
         
-        //TODO Finish this
-        function getCurrentVerseList(){
-        	var vs=currentState.verse.split("-");
-        	if(vs.length===1)return vs;
-        	var fvs=[];
-        	for(var i=vs[0]-0;i<=vs[1]-0;i++){
-        		fvs.push(i);
-        	}
-        	return fvs;
+        function updateChapterTitle(){
+        	const bookName = bibleBooks[currentState.testament][currentState.book].name;
+        	let vshort="";
+            if(currentState.verse.length>0){
+            	vshort=":" + verseShortHand();
+            }
+            let html = `${bookName} ${currentState.chapter}${vshort}`;
+            document.querySelector(".chapter-title").innerHTML=html;
         }
 
         // Display the chapter content
@@ -926,10 +957,13 @@
             const bookName = bibleBooks[currentState.testament][currentState.book].name;
             
             sitelenNames={};
-            
+            let vshort="";
+            if(currentState.verse.length>0){
+            	vshort=":" + verseShortHand();
+            }
             let html = `
                 <div class="chapter-header">
-                    <h2 class="chapter-title">${bookName} ${currentState.chapter}</h2>
+                    <h2 class="chapter-title">${bookName} ${currentState.chapter}${vshort}</h2>
                 </div>
             `;
             
@@ -946,7 +980,7 @@
                     const status = match[2]; // ? or !
                     const content = match[3];
                     
-                    const isHighlighted = currentState.verse === verseNum;
+                    const isHighlighted = currentState.verse.indexOf(verseNum)>=0;
                     
                     html += `
                         <div class="verse ${status === '!' ? 'solidified' : 'unsolidified'} ${isHighlighted ? 'highlighted' : ''}" id="verse-${verseNum}">
@@ -991,46 +1025,48 @@
             
             
             // Scroll to highlighted verse if specified
-            if (currentState.verse) {
-                const verseElement = document.getElementById(`verse-${currentState.verse}`);
-                if (verseElement) {
+            if (currentState.verse && currentState.verse.length>0) {
+            	currentState.verse.forEach((v,i)=>{
+                const verseElement = document.getElementById(`verse-${v}`);
+                if (verseElement && i===0) {
                     setTimeout(() => {
                         verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }, 100);
                 }
+                });
             }
+            var togVerse=(verse)=>{
+            	if(currentState.verse.indexOf(verse)<0){
+            		currentState.verse.push(verse);
+            		currentState.verse=currentState.verse.sort((a,b)=>a-b);
+            	}else{
+            		currentState.verse=currentState.verse.filter(v=>v!==verse);
+            		if(currentState.verse.length===0){
+            			currentState.isolated=false;
+            			isolatedToggle.checked = currentState.isolated;
+            			removeIsolated();
+            		}
+            	}
+            	currentState.verse.forEach(vv=>{
+            		document.querySelector("#verse-" + vv).classList.add("highlighted");
+            	});
+            	showToast("URL updated");
+            	updateURL();
+            	updateChapterTitle();
+            	
+            };
             document.querySelectorAll(".verse-number-st").forEach(e=>e.onclick=()=>{
             	document.querySelectorAll(".verse.highlighted")
             		    .forEach(d=>d.classList.remove("highlighted"));
             	var verse=e.parentNode.id.split("-")[1]-0;
-            	if(verse !== currentState.verse){
-            		document.querySelector("#verse-" + verse).classList.add("highlighted");
-            		currentState.verse=verse;
-            	}else{
-            		currentState.verse=null;
-            		currentState.isolated=false;
-            		isolatedToggle.checked = currentState.isolated;
-            		removeIsolated();
-            	}
-            	showToast("URL updated");
-            	updateURL();
+            	togVerse(verse);
             });
             
             document.querySelectorAll(".verse-number-lt").forEach(e=>e.onclick=()=>{
             	document.querySelectorAll(".verse.highlighted")
             		    .forEach(d=>d.classList.remove("highlighted"));
             	var verse=e.parentNode.id.split("-")[1]-0;
-            	if(verse !== currentState.verse){
-            		document.querySelector("#verse-" + verse).classList.add("highlighted");
-            		currentState.verse=verse;
-            	}else{
-            		currentState.verse=null;
-            		currentState.isolated=false;
-            		isolatedToggle.checked = currentState.isolated;
-            		removeIsolated();
-            	}
-            	showToast("URL updated");
-            	updateURL();
+            	togVerse(verse);
             });
             
             debugLog(`Displayed ${verseCount} verses (expected: ${expectedVerses})`);
@@ -1608,7 +1644,9 @@
     		}
     		
     		// Trigger the load
-    		currentState.verse = null; // Clear verse highlight on nav
+    		currentState.verse = []; // Clear verse highlight on nav
+    		currentState.isolated=false;
+    		removeIsolated();
     		loadChapter();
 		}
         
@@ -1645,7 +1683,9 @@
             
             chapterSelect.addEventListener('change', function() {
                 currentState.chapter = parseInt(this.value);
-                currentState.verse = null; // Reset verse when changing chapter
+                currentState.verse = []; // Reset verse when changing chapter
+                currentState.isolated=false;
+                currentState.removeIsolated();
             });
             
             loadButton.addEventListener('click', loadChapter);
