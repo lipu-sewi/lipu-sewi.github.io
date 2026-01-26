@@ -223,7 +223,7 @@
         
         .sitelen-pona-mode .verse-number-st .sitelen{
         	font-family: "NasinNanpa", system-ui, serif;
-            font-size: 24px;
+            font-size: var(--tp-font-size, 24px);
             line-height: 0.4;
             white-space: pre-wrap;
             /* enable ligatures / contextual features used by nasin nanpa font */
@@ -235,7 +235,7 @@
         
         .sitelen-pona-mode .verse-content {
             font-family: "NasinNanpa", system-ui, serif;
-            font-size: 24px;
+            font-size: var(--tp-font-size, 24px);
             line-height: 0.5;
             white-space: pre-wrap;
             /* enable ligatures / contextual features used by nasin nanpa fonts */
@@ -244,7 +244,7 @@
             -webkit-font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
             display:inline-block;
             margin-top:10px;
-            width:384px;
+            width:var(--tp-width, 384px);
         }
         
         .space{
@@ -530,17 +530,8 @@
     	
     	function updateViewing(){
     		
-    	
-    		const elements = document.querySelectorAll('.sitelen-pona-mode .verse-content');
-			
-			elements.forEach(el => {
-    			el.style.fontSize = global.fontSize + 'px';
-    			el.style.width = global.fontSize*global.charsPerLine + 'px';
-			});
-			const elements2 = document.querySelectorAll('.sitelen-pona-mode .verse-number-st .sitelen');
-			elements.forEach(el => {
-    			el.style.fontSize = global.fontSize + 'px';
-			});
+    		document.documentElement.style.setProperty('--tp-font-size', global.fontSize + 'px');
+			document.documentElement.style.setProperty('--tp-width', global.fontSize*global.charsPerLine + 'px');
 			
 			loadChapter();
     	}
