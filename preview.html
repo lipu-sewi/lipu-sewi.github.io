@@ -1024,7 +1024,6 @@
             }
             var togVerse=(verse)=>{
             	if(currentState.verse.indexOf(verse)<0){
-            		document.querySelector("#verse-" + verse).classList.add("highlighted");
             		currentState.verse.push(verse);
             		currentState.verse=currentState.verse.sort((a,b)=>a-b);
             	}else{
@@ -1035,6 +1034,9 @@
             			removeIsolated();
             		}
             	}
+            	currentState.verse.forEach(vv=>{
+            		document.querySelector("#verse-" + vv).classList.add("highlighted");
+            	});
             	showToast("URL updated");
             	updateURL();
             	
