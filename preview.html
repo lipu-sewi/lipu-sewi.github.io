@@ -189,6 +189,7 @@
 		.sitelen-pona-mode .verse-number-st {
 		    width: 75px;
 		    display:inline-block;
+		    float:right;
 		}
         
         .verse-content {
@@ -243,7 +244,7 @@
             font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
             -webkit-font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
             display:inline-block;
-            width:var(--tp-width, 384px);
+            width:var(--tp-width, 456px);
         }
         
         .space{
@@ -530,7 +531,7 @@
     	function updateViewing(){
     		
     		document.documentElement.style.setProperty('--tp-font-size', global.fontSize + 'px');
-			document.documentElement.style.setProperty('--tp-width', global.fontSize*global.charsPerLine + 'px');
+			document.documentElement.style.setProperty('--tp-width', global.fontSize*(global.charsPerLine+3) + 'px');
 			
 			loadChapter();
     	}
@@ -1001,7 +1002,7 @@
                         <div class="verse ${status === '!' ? 'solidified' : 'unsolidified'} ${isHighlighted ? 'highlighted' : ''}" id="verse-${verseNum}">
                             <span class="verse-number-lt"><span class="latina">${verseNum}</span></span>
                             
-                            <span class="verse-content">${formatVerseContent(content)}</span><span class="verse-number-st"><span class="sitelen">${numberToNasinNanpaPona(verseNum)}</span></span>
+                            <span class="verse-content">${formatVerseContent(content)}<div class="verse-number-st"><span class="sitelen">${numberToNasinNanpaPona(verseNum)}</span></div></span>
                         </div>
                     `;
                 } else if (line.trim() !== '') {
