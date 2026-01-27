@@ -1709,7 +1709,7 @@
                 currentState.chapter = parseInt(this.value);
                 currentState.verse = []; // Reset verse when changing chapter
                 currentState.isolated=false;
-                currentState.removeIsolated();
+                removeIsolated();
             });
             
             loadButton.addEventListener('click', loadChapter);
