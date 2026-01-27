@@ -152,7 +152,6 @@
   			vertical-align: top;
   			width: 20px;
   			display: inline-block;
-  			margin-top:5px;
   			cursor:pointer;
 		}
 		
@@ -1002,7 +1001,7 @@
                         <div class="verse ${status === '!' ? 'solidified' : 'unsolidified'} ${isHighlighted ? 'highlighted' : ''}" id="verse-${verseNum}">
                             <span class="verse-number-lt"><span class="latina">${verseNum}</span></span>
                             
-                            <span class="verse-content">${formatVerseContent(content)}<div class="verse-number-st"><span class="sitelen">${numberToNasinNanpaPona(verseNum)}</span></div></span>
+                            <span class="verse-content"><div class="verse-number-st"><span class="sitelen">${numberToNasinNanpaPona(verseNum)}</span></div>${formatVerseContent(content)}</span>
                         </div>
                     `;
                 } else if (line.trim() !== '') {
