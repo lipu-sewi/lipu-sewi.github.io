@@ -1080,7 +1080,7 @@
             document.querySelectorAll(".verse-number-st").forEach(e=>e.onclick=()=>{
             	document.querySelectorAll(".verse.highlighted")
             		    .forEach(d=>d.classList.remove("highlighted"));
-            	var verse=e.parentNode.id.split("-")[1]-0;
+            	var verse=e.parentNode.parentNode.id.split("-")[1]-0;
             	togVerse(verse);
             });
             
