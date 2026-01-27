@@ -223,8 +223,8 @@
         
         .sitelen-pona-mode .verse-number-st .sitelen{
         	font-family: "NasinNanpa", system-ui, serif;
-            font-size: 24px;
-            line-height: 0.4;
+            font-size: var(--tp-font-size, 24px);
+            line-height: 1.2;
             white-space: pre-wrap;
             /* enable ligatures / contextual features used by nasin nanpa font */
             font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
@@ -235,16 +235,15 @@
         
         .sitelen-pona-mode .verse-content {
             font-family: "NasinNanpa", system-ui, serif;
-            font-size: 24px;
-            line-height: 0.5;
+            font-size: var(--tp-font-size, 24px);
+            line-height: 1.2;
             white-space: pre-wrap;
             /* enable ligatures / contextual features used by nasin nanpa fonts */
             font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
             font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
             -webkit-font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
             display:inline-block;
-            margin-top:10px;
-            width:384px;
+            width:var(--tp-width, 384px);
         }
         
         .space{
@@ -298,12 +297,12 @@
         .sitelen-pona-mode .newline{
         	display:block;
         	opacity:0%;
-        	height:22px;
+        	height:0px;
         }
         .sitelen-pona-mode .newline2{
         	display:block;
         	opacity:0%;
-        	height:22px;
+        	height:0px;
         }
         .sitelen-pona-mode .punct{
         	display:none;
@@ -520,6 +519,22 @@
     <div id="toast" class="toast">Link copied to clipboard!</div>
 
     <script>
+    
+    	const global={
+    		fontSize:24,
+    		charsPerLine:16,
+    		minSplitWNum:3,
+    		splitLaMin:5,    		
+    	};
+    	
+    	function updateViewing(){
+    		
+    		document.documentElement.style.setProperty('--tp-font-size', global.fontSize + 'px');
+			document.documentElement.style.setProperty('--tp-width', global.fontSize*global.charsPerLine + 'px');
+			
+			loadChapter();
+    	}
+    
         // Bible metadata - books and number of chapters
         const bibleBooks = {
             "old_testament": {
@@ -1134,9 +1149,9 @@
             text= text.replace(/[\^][\^]/g,"&#64;");
             var textList=text.split("@");
             var nstart=0;
-            var splitLaMin=5;
-            var minSplitWNum=3;
-            var splitLaTot=15;
+            var splitLaMin=global.splitLaMin;
+            var minSplitWNum=global.minSplitWNum;
+            var splitLaTot=global.charsPerLine-1;
             
             text=textList.map(l=>{
             		var words=l.split(" ");
@@ -1579,7 +1594,7 @@
             if(!b.sitelen){
                 let build = "";
                 if(fullDictionary.indexOf(b.proper.toLowerCase())>=0){
-                	return {words: (b.proper.toLowerCase() + ":"), html: (b.proper.toLowerCase() + "&#xF199D;")};	
+                	return {words: (b.proper.toLowerCase() + ":"), html: (b.proper.toLowerCase() + ":")};	
                 }
                 let nm="";
                 let htm="";
