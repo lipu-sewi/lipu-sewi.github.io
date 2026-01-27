@@ -986,6 +986,7 @@
                 <div class="chapter-header">
                     <h2 class="chapter-title">${bookName} ${currentState.chapter}${vshort}</h2>
                 </div>
+                <div class="verse-wrapper">
             `;
             
             let verseCount = 0;
@@ -1032,7 +1033,7 @@
                 missingVersesContainer.innerHTML = '';
             }
             
-            chapterDisplay.innerHTML = html;
+            chapterDisplay.innerHTML = html + "</div>";
             
             // Apply sitelen pona font if toggled
             if (isolatedToggle.checked) {
