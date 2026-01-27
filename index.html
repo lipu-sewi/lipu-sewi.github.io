@@ -136,6 +136,8 @@
             border: 2px solid #ffd54f;
         }
         
+  
+        
         .verse-number-lt {
   			font-weight: bold;
   			margin-right: 5px;
@@ -152,7 +154,6 @@
   			vertical-align: top;
   			width: 20px;
   			display: inline-block;
-  			margin-top:5px;
   			cursor:pointer;
 		}
 		
@@ -189,6 +190,7 @@
 		.sitelen-pona-mode .verse-number-st {
 		    width: 75px;
 		    display:inline-block;
+		    float:right;
 		}
         
         .verse-content {
@@ -224,7 +226,7 @@
         .sitelen-pona-mode .verse-number-st .sitelen{
         	font-family: "NasinNanpa", system-ui, serif;
             font-size: var(--tp-font-size, 24px);
-            line-height: 1.2;
+            line-height: 1.3;
             white-space: pre-wrap;
             /* enable ligatures / contextual features used by nasin nanpa font */
             font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
@@ -236,14 +238,14 @@
         .sitelen-pona-mode .verse-content {
             font-family: "NasinNanpa", system-ui, serif;
             font-size: var(--tp-font-size, 24px);
-            line-height: 1.2;
+            line-height: 1.3;
             white-space: pre-wrap;
             /* enable ligatures / contextual features used by nasin nanpa fonts */
             font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
             font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
             -webkit-font-feature-settings: "liga" 1, "rlig" 1, "calt" 1;
             display:inline-block;
-            width:var(--tp-width, 384px);
+            width:var(--tp-width, 456px);
         }
         
         .space{
@@ -299,6 +301,10 @@
         	opacity:0%;
         	height:0px;
         }
+        
+        .sitelen-pona-mode span:last-child.newline {
+  			display: none;
+		}
         .sitelen-pona-mode .newline2{
         	display:block;
         	opacity:0%;
@@ -530,7 +536,7 @@
     	function updateViewing(){
     		
     		document.documentElement.style.setProperty('--tp-font-size', global.fontSize + 'px');
-			document.documentElement.style.setProperty('--tp-width', global.fontSize*global.charsPerLine + 'px');
+			document.documentElement.style.setProperty('--tp-width', global.fontSize*(global.charsPerLine+3) + 'px');
 			
 			loadChapter();
     	}
@@ -1001,7 +1007,7 @@
                         <div class="verse ${status === '!' ? 'solidified' : 'unsolidified'} ${isHighlighted ? 'highlighted' : ''}" id="verse-${verseNum}">
                             <span class="verse-number-lt"><span class="latina">${verseNum}</span></span>
                             
-                            <span class="verse-content">${formatVerseContent(content)}</span><span class="verse-number-st"><span class="sitelen">${numberToNasinNanpaPona(verseNum)}</span></span>
+                            <span class="verse-content"><div class="verse-number-st"><span class="sitelen">${numberToNasinNanpaPona(verseNum)}</span></div>${formatVerseContent(content)}</span>
                         </div>
                     `;
                 } else if (line.trim() !== '') {
