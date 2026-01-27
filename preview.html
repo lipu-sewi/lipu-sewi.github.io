@@ -136,6 +136,8 @@
             border: 2px solid #ffd54f;
         }
         
+  
+        
         .verse-number-lt {
   			font-weight: bold;
   			margin-right: 5px;
@@ -224,7 +226,7 @@
         .sitelen-pona-mode .verse-number-st .sitelen{
         	font-family: "NasinNanpa", system-ui, serif;
             font-size: var(--tp-font-size, 24px);
-            line-height: 1.2;
+            line-height: 1.3;
             white-space: pre-wrap;
             /* enable ligatures / contextual features used by nasin nanpa font */
             font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
@@ -236,7 +238,7 @@
         .sitelen-pona-mode .verse-content {
             font-family: "NasinNanpa", system-ui, serif;
             font-size: var(--tp-font-size, 24px);
-            line-height: 1.2;
+            line-height: 1.3;
             white-space: pre-wrap;
             /* enable ligatures / contextual features used by nasin nanpa fonts */
             font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
@@ -299,6 +301,10 @@
         	opacity:0%;
         	height:0px;
         }
+        
+        .sitelen-pona-mode span:last-child.newline {
+  			display: none;
+		}
         .sitelen-pona-mode .newline2{
         	display:block;
         	opacity:0%;
