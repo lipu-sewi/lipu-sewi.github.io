@@ -1105,7 +1105,7 @@
 		
 		function nasinsitelenkalamapilinjalili(nm){
 			m=nm.toLowerCase();
-			wlist=fullDictionary.map(a=>a).sort((a,b)=>a.length-b.length);
+			wlist=fullDictionary.map(a=>a).filter(a=>a!=="ali" && a!=="ale").sort((a,b)=>a.length-b.length);
 			let syms=[];
 			while(m.length>0){
 				let maxDot=0;
