@@ -188,7 +188,7 @@
 		    display:none;
 		}
 		.sitelen-pona-mode .verse-number-st {
-		    width: var(--tp-width-nm, 57px);
+		    width: var(--tp-width-nm, 59px);
 		    display:inline-block;
 		    float:right;
 		}
@@ -534,11 +534,9 @@
     	};
     	
     	function updateViewing(){
-    		
     		document.documentElement.style.setProperty('--tp-font-size', global.fontSize + 'px');
 			document.documentElement.style.setProperty('--tp-width', global.fontSize*(global.charsPerLine+3) + 'px');
-			document.documentElement.style.setProperty('--tp-width-nm', global.fontSize*(3) + 'px');
-			
+			document.documentElement.style.setProperty('--tp-width-nm', (global.fontSize*(3)+2) + 'px');		
 			
 			loadChapter();
     	}
